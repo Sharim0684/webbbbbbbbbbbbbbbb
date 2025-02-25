@@ -6,7 +6,7 @@ import VerificationPage from './components/VerificationPage';
 import SetNewPassword from './components/SetNewPassword';
 
 import './App.css';
-// import Header from './components/Header';
+
 import DashBoard from './components/DashBoard';
 import AccountsPage from './components/AccountsPage';
 
