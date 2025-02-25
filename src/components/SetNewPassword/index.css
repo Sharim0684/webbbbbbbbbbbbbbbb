@@ -1,0 +1,127 @@
+.webapp-setpswpg-page{
+    height: 100vh;
+    background: linear-gradient(to bottom right,#ffffff, #fffcdc);
+}
+.webapp-setpswpg-brand-logo-sec{
+    text-align: start;
+    margin-bottom: 20px;
+    padding-left: 50px;
+}
+.webapp-setpswpg-brand-img{
+    height: 70px;
+    width: 200px;
+    margin-top: 20px;
+}
+.webapp-setpswpg-form-sec{
+    margin-top: 100px;
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+}
+
+.webapp-setpswpg-brand-logo{
+    height: 300px;
+    width: 350px;
+    background-color: transparent;
+}
+.webapp-setpswpg-form-container{
+    padding: 10px;
+}
+.webapp-setpswpg-form{
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   /* border: 1px solid blue; */
+}
+.webapp-setpswpg-setpsw-text{
+    color: #232323;
+    font-size: 40px;
+    font-weight: 600;
+    font-family: Poppins;
+    text-align: center;
+    
+}
+.webapp-setpswpg-setpsw-sub-text{
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 400;
+    color: #969696;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.webapp-setpswpg-input-field-container{
+    width: 90%;
+    margin-bottom: 10px;
+    /* border: 1px solid blue; */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+    
+}
+.webapp-setpswpg-input-field{
+    height: 40px;
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    border: none;
+    outline:1px solid #561f5b;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: Poppins;
+    color: #232323;
+}
+.webapp-setpswpg-input-field:focus{
+    border: 1px solid #561f5b;
+}
+
+.webapp-setpswpg-update-btn{
+    border: none;
+    outline: none;
+    height: 40px;
+    width: 90%;
+    color: white;
+    background-color: #561f5b;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 18px;
+}
+::placeholder{
+    color: #969696;
+}
+.webapp-setpswpg-signup-text{
+    font-family: Poppins;
+    font-size: 18px;
+    color: #969696;
+    margin-top: 20px;
+    text-align: center;
+}
+.webapp-setpswpg-signup-span-text{
+    color: #561f5b;
+    font-weight: 500;
+}
+.webapp-setpsw-updt-link{
+    text-decoration: none;
+    color: white;
+}
+.webapp-setpsw-spn-link{
+    text-decoration: none;
+}
+.webapp-setpsw-spn-link:hover{
+    text-decoration: underline;
+    color: #561f5b;
+}
+.webapp-setpswpg-err{
+    color: red;
+    font-family: Poppins;
+    font-size: 12px;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    text-align: start;
+}

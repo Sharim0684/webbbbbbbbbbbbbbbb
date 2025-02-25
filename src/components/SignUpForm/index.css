@@ -1,0 +1,217 @@
+.webapp-signup-pg{
+    height: 100vh;
+    background: linear-gradient(to bottom right,#ffffff,#fffcdc);
+   
+}
+.webapp-signup-pg-brand-img-sec{
+    text-align: start;
+    margin-bottom: 20px;
+    padding-left: 50px;
+}
+
+.webapp-signup-pg-brand-img{
+    height: 70px;
+    width: 200px;
+    margin-top: 20px;
+}
+.webapp-signup-pg-brand-logo{
+    height: 300px;
+    width: 350px;
+    background-color: transparent;
+}
+.webapp-signup-pg-form-sec{    
+    margin-top: 50px;
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+    /* border: 1px solid black; */
+}
+.webapp-signup-pg-signup-text{
+    color: #232323;
+    font-size: 30px;
+    font-weight: 600;
+    font-family: Poppins;
+}
+.webapp-signup-pg-signup-sub-text{
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 400;
+    color: #969696;
+    margin-bottom: 20px;
+}
+.webapp-signup-pg-form-container{
+    padding: 10px;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid blue; */
+    margin-top: 0px;
+    padding-top: 0px;
+}
+.webapp-signup-pg-form{
+    width: 100%;
+    
+}
+
+.webapp-signup-pg-signup-btn{
+    border: none;
+    outline: none;
+    height: 30px;
+    width: 100%;
+    color: white;
+    background-color: #561f5b;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 18px;
+}
+.webapp-signup-pg-signin-text{
+    font-family: Poppins;
+    font-size: 18px;
+    color: #969696;
+    margin-top: 20px;
+    text-align: center;
+}
+.webapp-signup-pg-span-text{
+    color: #561f5b;
+    font-weight: 600;
+    margin-left: 10px;
+}
+.webapp-signup-pg-input-filed-container{
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    height: 40px;
+    width: 100%;
+    /* border: 1px solid blue; */
+}
+
+.webapp-signup-pg-input-field{
+    height: 30px;
+    width: 100%;
+    border-radius: 12px;
+    padding-left: 20px;
+    border: none;
+    outline:1px solid #561f5b;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: Poppins;
+    color: #232323;
+    margin-bottom: 5px;
+
+}
+.webapp-signup-pg-input-field:focus{
+    border: 1px solid #561f5b;
+}
+::placeholder{
+    color: #969696;
+}
+.webapp-signup-pg-err{
+    color: red;
+    font-family: Poppins;
+    font-size: 12px;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    text-align: start;
+}
+ .webapp-signup-pg-link{
+    text-decoration: none;
+} 
+.webapp-signup-pg-link:hover{
+    text-decoration: underline;
+    color:#561f5b
+}
+.webapp-signup-link{
+    text-decoration: none;
+    color: white;
+}
+.phone-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: flex-start;
+}
+.signup-pg-ph-err{
+    align-self: flex-end;
+    margin-right: 50px;
+}
+.PhoneInput{
+    width: 100%;
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center; */
+    margin-bottom: 5px;
+    /* border: 2px solid blue; */
+}
+.PhoneInputInput{
+    height: 30px;
+    border-radius: 12px;
+    border: none;
+    outline: 1px solid #561f5b;
+    color: #561f5b;
+    margin-left: 7px;
+    padding-left: 20px;
+    width: 98%;
+    flex: none;
+}
+
+.PhoneInputCountryIcon{
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+}
+.PhoneInputCountryIconImg{
+    height: 28px;
+    width: 50px;
+    border: none;
+    outline: none;
+    margin-top: -6px;
+}
+.PhoneInputCountrySelectArrow{
+    height: 12px;
+    width: 12px;
+    opacity: none;
+    border-color: #561f5b;
+    border-bottom-width:2px;
+    border-right-width:2px;
+    margin-left: 40px;
+    opacity:1;
+}
+.webapp-signup-pg-security-qs-field-container{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+
+
+}
+.webapp-signup-pg-qs-label{
+    color: #561f5b;
+    font-family: Poppins;
+    font-size: 14px;
+    margin-left: 5px;
+    text-align: start;
+    
+    
+}
+.webapp-signup-pg-qs-select{
+    border-radius: 12px;
+    height: 30px;
+    margin-left: 20px;
+    border: none;
+    outline: 1px solid #561f5b;
+    color: #561f5b;
+    width: 56%;
+
+  
+}
+.option{
+    font-family: Poppins;
+    font-size: 14px;
+}

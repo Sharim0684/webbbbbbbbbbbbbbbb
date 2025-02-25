@@ -1,0 +1,123 @@
+.webapp-vref-pg{
+    height: 100vh;
+    background: linear-gradient(to bottom right, #ffffff,#fffcdc);
+  
+}
+.webapp-vref-pg-logo-sec{
+    text-align: start;
+    margin-bottom: 20px;
+    padding-left: 50px;
+}
+
+.webapp-vref-pg-brand-img{
+    height: 70px;
+    width: 200px;
+    margin-top: 20px;
+}
+.webapp-vref-pg-brand-logo{
+    height: 300px;
+    width: 350px;
+    background-color: transparent;
+}
+.webapp-vref-pg-form-sec{    
+    margin-top: 100px;
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+}
+.webapp-vref-pg-recovery-text{
+    color: #232323;
+    font-size: 40px;
+    font-weight: 600;
+    font-family: Poppins;
+    text-align: center;
+}
+.webapp-vref-pg-recovery-sub-text{
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 400;
+    color: #969696;
+    margin-bottom: 20px;
+}
+.webapp-vref-pg-form-container{
+    padding: 10px;
+}
+.webapp-vref-pg-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.webapp-vref-pg-continue-btn{
+    border: none;
+    outline: none;
+    height: 40px;
+    width: 230px;
+    color: white;
+    background-color: #561f5b;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 18px;
+}
+.webapp-vref-pg-signin-text{
+    font-family: Poppins;
+    font-size: 18px;
+    color: #969696;
+    margin-top: 10px;
+    text-align: center;
+}
+.webapp-vref-pg-span-text{
+    color: #561f5b;
+    font-weight: 600;
+    margin-left: 10px;
+}
+.webapp-vref-pg-otp-filed-containeer{
+    /* text-align: start; */
+    margin-bottom: 20px;
+
+}
+.webapp-vref-pg-otp-field{
+    height: 50px;
+    width: 50px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    margin-top: 20px;
+    border: none;
+    outline:1px solid #561f5b;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: Poppins;
+    color: #232323;
+    text-align: center;
+
+}
+::placeholder{
+    color: #969696;
+}
+.webapp-verf-page-link{
+    text-decoration: none;
+}
+.webapp-verf-page-link:hover{
+    text-decoration: underline;
+    color: #561f5b;
+}
+.webapp-verf-pg-cont-link{
+    text-decoration: none;
+    color: white;
+}
+.webapp-vref-pg-timer{
+    font-family: Poppinns;
+    font-size: 20px;
+    font-weight: 500;
+    color: #561f5b;
+}
+.webapp-vref-pg-otp-resend-text{
+    color: #561f5b;
+    font-family: Poppins;
+    font-size: 16px;
+    margin-top: 10px;
+    
+}
