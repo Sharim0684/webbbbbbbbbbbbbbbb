@@ -57,7 +57,7 @@ function Header() {
               </Button>
             ))} */}
             <Link style={{textDecoration:'none',}} to="/add-accounts"><Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Accounts</Typography></Link>
-            <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Auto Post</Typography>
+            <Link style={{textDecoration:'none',}} to="/autoPost"><Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Auto Post</Typography></Link>
             <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Post Schedules</Typography>
             <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Share Now</Typography>
             <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Templates</Typography>

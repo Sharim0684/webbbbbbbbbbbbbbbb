@@ -9,6 +9,7 @@ import './App.css';
 
 import DashBoard from './components/DashBoard';
 import AccountsPage from './components/AccountsPage';
+import AutoPostSettings from './components/AutoPost/aotoPost';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route exact path='/verification' Component={VerificationPage} />
           <Route exact path='/set-new-paswd' Component={SetNewPassword} />
           <Route exact path='/add-accounts' Component={AccountsPage} />
+          <Route exact path='/autoPost' Component={AutoPostSettings} />
         </Routes>
       </BrowserRouter>
       {/* <Header/> */}
