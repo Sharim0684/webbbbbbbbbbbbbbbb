@@ -57,10 +57,9 @@ function Header() {
               </Button>
             ))} */}
             <Link style={{textDecoration:'none',}} to="/add-accounts"><Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Accounts</Typography></Link>
-            <Link style={{textDecoration:'none',}} to="/autoPost"><Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Auto Post</Typography></Link>
-            <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Post Schedules</Typography>
-            <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Share Now</Typography>
-            <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Templates</Typography>
+            <Link style={{textDecoration:'none',}} to="/sharePost"><Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Share Now</Typography></Link>
+            <Link style={{textDecoration:'none',}} to="/schedulePage"><Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Post Schedules</Typography> </Link>
+            
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
@@ -69,7 +68,7 @@ function Header() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: '45px',}}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -84,10 +83,10 @@ function Header() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center' }}>Profile</Typography></MenuItem>
-              <MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center' }}>Account</Typography></MenuItem>
-              <MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center' }}>DashBoard</Typography></MenuItem>
-              <Link style={{textDecoration:'none'}} to="/login"><MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center' }}>Logout</Typography></MenuItem></Link>
+              <MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center',color:'#561f5b', }}>Profile</Typography></MenuItem>
+              <MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center',color:'#561f5b', }}>Account</Typography></MenuItem>
+              {/* <MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center' }}>DashBoard</Typography></MenuItem> */}
+              <Link style={{textDecoration:'none'}} to="/login"><MenuItem onClick={handleCloseUserMenu} ><Typography sx={{ textAlign: 'center',color:'#561f5b', }}>Logout</Typography></MenuItem></Link>
               {/* {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>

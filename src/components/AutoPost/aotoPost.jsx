@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Container, FormControl, FormControlLabel, Switch, Select, MenuItem, Typography, Box } from '@mui/material';
-
+import Header from "../Header";
 const AutoPostSettings = () => {
     const [autoPost, setAutoPost] = useState(false);
     const [autoLog, setAutoLog] = useState(true);
 
     return (
-        <Container style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px' }}>
+        <container maxWidth="lg" sx={{}} >
+            <Header/>
+        <Container style={{ backgroundColor: 'white', padding:'20px', borderRadius: '8px',marginTop:'20px' }}>
+         
             <Typography variant="h5" gutterBottom sx={{ color: '#561f5b', fontWeight: 'bold', textAlign: 'left' }}>Auto Post Settings</Typography>
            
             <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} p={2} bgcolor="#f9f9f9" borderRadius={2}>
@@ -119,6 +122,7 @@ const AutoPostSettings = () => {
                 }} />
             </Box>
         </Container>
+          </container>
     );
 };
 

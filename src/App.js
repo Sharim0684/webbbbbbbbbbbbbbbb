@@ -10,6 +10,9 @@ import './App.css';
 import DashBoard from './components/DashBoard';
 import AccountsPage from './components/AccountsPage';
 import AutoPostSettings from './components/AutoPost/aotoPost';
+import SharePostPage from './components/SharePost/sharePost';
+import ThankYouPage from './components/ThankyouPage/thankyouPage';
+import SetupSchedulePage from './components/Post- Schedules/schedules';
 
 function App() {
   return (
@@ -24,6 +27,10 @@ function App() {
           <Route exact path='/set-new-paswd' Component={SetNewPassword} />
           <Route exact path='/add-accounts' Component={AccountsPage} />
           <Route exact path='/autoPost' Component={AutoPostSettings} />
+          <Route exact path='/sharePost' Component={SharePostPage} />
+          <Route exact path='/thankYouPage' Component={ThankYouPage} />
+        
+          <Route exact path='/schedulePage' Component={SetupSchedulePage} />
         </Routes>
       </BrowserRouter>
       {/* <Header/> */}
