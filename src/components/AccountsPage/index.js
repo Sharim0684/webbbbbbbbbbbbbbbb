@@ -1,26 +1,66 @@
-import { Button, container, InputBase, ListItem, Typography,} from "@mui/material";
-import { border, borderRadius, Box, Container, height, Stack } from '@mui/system';
+import { Button, InputBase, Typography,} from "@mui/material";
+import {Box, Container, Stack } from '@mui/system';
 import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
-import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import IconButton from '@mui/material/IconButton';
+// import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+// import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
+// import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import XIcon from '@mui/icons-material/X';
-import CloseIcon from '@mui/icons-material/Close';
-import React from "react";
+// import CloseIcon from '@mui/icons-material/Close';
+import React, { useEffect } from "react";
 import Header from "../Header";
-import Modal from '@mui/material/Modal';
-import Popover from '@mui/material/Popover';
 import './index.css'
 import { useState } from "react";
+import FacebookIcon from "@mui/icons-material/Facebook";
+// import TwitterIcon from "@mui/icons-material/Twitter";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import {Card, CardContent, Grid, } from "@mui/material";
+import Cookies from 'js-cookie'
+import SidebarListItem from "../SidebarListItem";
 
+
+
+const socialPlatforms = [
+    { name: "Facebook", icon: <FacebookIcon color='primary' /> },
+    { name: "Twitter", icon: <XIcon color="primary" sx={{fontSize:'20px'}} /> },
+    { name: "Instagram", icon: <InstagramIcon color="primary"/> },
+    { name: "LinkedIn", icon: <LinkedInIcon color="primary"/> },
+  ];
+  
 
 const AccountsPage=()=>{
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);    
+
+    const [selectedPlatforms, setSelectedPlatforms] = useState([]);
+
+
+   
+
+      const handleSelect = (platform) => {        
+        setSelectedPlatforms((prev) =>
+          prev.includes(platform)
+            ? [...prev]
+            : [...prev, platform]
+        );
+        
+      };
+
+    //    prev.filter((p) => p !== platform)
+    
+    useEffect(()=>{     
+        // const newArr=localStorage.getItem('selectedPlatformsArr')
+        // // const parsedArr=newArr
+        // console.log(newArr)
+        
+    },[])
+
+    const deleteItem=(name)=>{
+       const filteredList=selectedPlatforms.filter((platform)=>name !==platform.name)
+       setSelectedPlatforms(filteredList)
+
+    }
 
 
 
@@ -31,24 +71,12 @@ const AccountsPage=()=>{
             <Container maxWidth="xl" sx={{border:"",marginTop:'20px'}}>
                 <Stack direction='row' spacing={2}>
                     <Box sx={{flex:1,width:'400px',border:'',textAlign:'start',marginRight:'10px',paddingLeft:'20px'}}>
-                        <Typography variant="h4" sx={{fontFamily:'poppins',color:'#561f5b',mt:3}}>Platforms</Typography>
-                        <Stack spacing={2} mt={6} ml={4}>
-                            <Box className="account-pg-sidenav-box" sx={{bgcolor:'aliceblue'}}>
-                                <AccountTreeOutlinedIcon sx={{color:"#561f5b",mr:2}}/>
-                                <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >All</Typography>
-                            </Box>
-                            <Box className="account-pg-sidenav-box">
-                                <LinkedInIcon sx={{color:'blue',fontSize:"30px",mr:2}}/>
-                            <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >LinkedIn</Typography>
-                            </Box> 
-                            <Box className="account-pg-sidenav-box">
-                                <FacebookOutlinedIcon sx={{color:'blue',mr:2,fontSize:"30px"}} />
-                                <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >Facebook</Typography>
-                            </Box>
-                            <Box className="account-pg-sidenav-box">
-                                <XIcon sx={{color:'white',backgroundColor:'black',mr:2,fontSize:"25px"}}/>
-                                <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >X(Twitter)</Typography>
-                            </Box>
+                        <Typography variant="h4" sx={{fontFamily:'poppins',color:'#561f5b',mt:12}}>Connected Platforms</Typography>
+                        <Stack spacing={2} mt={8} ml={0} mr={2} border={''}>
+                            {selectedPlatforms.map((platform)=>(
+                               <SidebarListItem key={platform.name} platform={platform} deleteMedia={deleteItem} />
+                            ))}
+                           
                         </Stack>
                     </Box>
 
@@ -57,50 +85,39 @@ const AccountsPage=()=>{
                             <InputBase 
                                 sx={{ ml: 1, flex: 1,height:'100%',width:'100%' }}
                                 placeholder="Search accounts"
-                                inputProps={{ 'aria-label': 'search accounts' }}
-                                
+                                inputProps={{ 'aria-label': 'search accounts' }}                                
                             />
                             <IconButton type="button" sx={{ p: '10px' }} aria-label="search"> 
                                 <SearchIcon  sx={{marginRight:'10px'}} />
                             </IconButton>      
                         </Paper>
-                        <button type="button" onClick={handleOpen} style={{height:'70px',width:'200px',borderRadius:'12px',color:'#561f5b',fontWeight:'500',background:'transparent',border:'2px solid #561f5b'}}>
+                        <Button variant="outline" style={{height:'50px',width:'250px',borderRadius:'12px',color:'#561f5b',fontWeight:'500',background:'transparent',border:'2px solid #561f5b'}}>
                             <AddIcon sx={{fontSize:30,marginRight:'10px'}} /> Connect Accounts
-                        </button>                        
-                        <Modal  open={open}>
-                            <Box style={{background:'white',width:'65%',height:'500px',position:'absolute',top:'20%',left:"30%",padding:'10px',borderRadius:'12px'}}>
-                                <Stack direction="row" justifyContent='space-between'>
-                                    <Typography variant="h5" sx={{color:'#561f5b'}}>Connect Account</Typography>
-                                    <Button onClick={handleClose} ><CloseIcon sx={{color:'#561f5b',fontSize:'20px'}}  /></Button>
-                                </Stack>
-                                <Stack  direction='row' spacing={4} sx={{border:'',pl:5,mt:5}}>
-                                    <Paper sx={{width:"250px",height:'',padding:'10px',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-                                        <Stack direction='row' spacing={2} sx={{width:'200px'}} >
-                                            <FacebookOutlinedIcon sx={{color:'blue',mr:2,fontSize:"30px"}} />
-                                            <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >Facebook</Typography>
-                                        </Stack>
-                                        <Button variant="contained" sx={{width:'200px',mt:4}} >Connect</Button>
-                                    </Paper>
-                                    <Paper sx={{width:"250px",height:'',padding:'10px',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}} >
-                                        <Stack direction='row' spacing={2} sx={{width:'200px'}} >
-                                            <LinkedInIcon sx={{color:'blue',mr:2,fontSize:"30px"}} />
-                                            <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >LinkedIn</Typography>
-                                        </Stack>
-                                        <Button variant="contained" sx={{width:'200px',mt:4}} >Connect</Button>
-                                    </Paper>
-                                    <Paper sx={{width:"250px",height:'',padding:'10px',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center'}} >
-                                        <Stack direction='row' spacing={2} sx={{width:'200px'}}>
-                                            <XIcon sx={{color:'blue',mr:2,fontSize:"30px"}} />
-                                            <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >X(Twitter)</Typography>
-                                        </Stack>
-                                        <Button variant="contained" sx={{width:'200px',mt:4}} >Connect</Button>
-                                    </Paper>
-                                    
-                                </Stack>
-                            </Box>
-
-                        </Modal>
-                        
+                        </Button>   
+                        <Stack  direction='row' spacing={4} sx={{border:'',pl:5,mt:5}}>
+                            <Grid container spacing={2}>
+                                {socialPlatforms.map((platform) => (
+                                    <Grid item key={platform.name} xs={6} sm={3}>
+                                    <Card>
+                                        <CardContent style={{ textAlign: "center" }}>
+                                        {platform.icon}
+                                        <Typography sx={{color:'#561f5b',mt:1}}>{platform.name}</Typography>
+                                        <Button                                            
+                                            variant="contained"
+                                            sx={{backgroundColor:"#561f5b",mt:1}}
+                                            
+                                            onClick={() => handleSelect(platform)}
+                                            // disabled={selectedPlatforms.includes(platform)}
+                                        >
+                                            {selectedPlatforms.includes(platform) ? "Connected" : "Connect"}
+                                        </Button>
+                                        </CardContent>
+                                    </Card>
+                                    </Grid>
+                                ))}
+                            </Grid> 
+                        </Stack>
+                          
                     </Box>
                 </Stack>
                 
