@@ -110,11 +110,29 @@ const SetupSchedulePage = () => {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             fullWidth
-                            sx={{ mb: 3 }}
+                            sx={{ mb: 3,
+                                "& .MuiOutlinedInput-root": {
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#561f5b"
+                                    }
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#561f5b"
+                                }
+                            }} 
                         />
 
                         {/* Start Date & Time */}
-                        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 3, mb: 3 }}>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 3, mb: 3, 
+                                "& .MuiOutlinedInput-root": {
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#561f5b"
+                                    }
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#561f5b"
+                                }
+                           }}>
                             {/* Start Date & Time */}
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DateTimePicker
@@ -122,13 +140,22 @@ const SetupSchedulePage = () => {
                                     value={startDate}
                                     onChange={(newValue) => setStartDate(newValue)}
                                     renderInput={(params) => (
-                                        <TextField {...params} sx={{ width: "48%" }} />
+                                        <TextField {...params} sx={{ width: "48%", }} />
                                     )}
                                 />
                             </LocalizationProvider>
 
                             {/* Post Interval */}
-                            <FormControl sx={{ width: "48%" }}>
+                            <FormControl sx={{ width: "48%",
+                                "& .MuiOutlinedInput-root": {
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#561f5b"
+                                    }
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#561f5b"
+                                }
+                              }}>
                                 <InputLabel>Post Interval</InputLabel>
                                 <Select
                                     value={postInterval}
@@ -146,7 +173,16 @@ const SetupSchedulePage = () => {
                         </Box>
 
                         {/* Order Posts By */}
-                        <FormControl fullWidth sx={{ mb: 3 }}>
+                        <FormControl fullWidth sx={{ mb: 3,
+                                "& .MuiOutlinedInput-root": {
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#561f5b"
+                                    }
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#561f5b"
+                                }
+                              }}>
                             <InputLabel>Order Posts By</InputLabel>
                             <Select
                                 value={orderPostsBy}
@@ -161,7 +197,16 @@ const SetupSchedulePage = () => {
                         </FormControl>
 
                         {/* Sleep Timer */}
-                        <Box sx={{ mb: 3, display: "flex", flexDirection: "column", maxWidth: "70%" }}>
+                        <Box sx={{ mb: 3, display: "flex", flexDirection: "column", maxWidth: "70%", 
+                                "& .MuiOutlinedInput-root": {
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "#561f5b"
+                                    }
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "#561f5b"
+                                }
+                             }}>
                             <Typography variant="h6" sx={{ mb: 2 }}>
                                 Set a Sleep Timer
                             </Typography>
