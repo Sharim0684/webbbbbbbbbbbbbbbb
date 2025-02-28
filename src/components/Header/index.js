@@ -60,7 +60,7 @@ function Header() {
             <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Auto Post</Typography>
             <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Post Schedules</Typography>
             <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Share Now</Typography>
-            <Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Templates</Typography>
+            <Link style={{textDecoration:'none',}} to="/templates"><Typography variant='hr' sx={{mr:3,color:'#561f5b',fontFamily:'poppins',fontWeight:'600',fontSize:'16px'}}>Templates</Typography></Link>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
