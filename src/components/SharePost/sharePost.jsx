@@ -161,7 +161,7 @@ const SharePostPage = () => {
     };
 
     const handleSetupSchedule = () => {
-        navigate("/setup-schedule");
+        navigate("/schedulePage");
     };
 
     const handleClosePreview = () => {

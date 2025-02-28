@@ -43,9 +43,11 @@ function Header() {
     <AppBar position="static" sx={{bgcolor:'white',}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        <Box sx={{width:'200px',border:''}}>
-        <img src={BrandLogo} style={{height:"50px"}} className='mb-3'/>          
-        </Box>            
+        <Link to="/" style={{ textDecoration: 'none' }}>
+      <Box sx={{ width: '200px', cursor: 'pointer' }}>
+        <img src={BrandLogo} alt="Brand Logo" style={{ height: "50px" }} className="mb-3" />
+      </Box>
+    </Link>          
          <Box sx={{ flexGrow: 1, display:"flex",justifyContent:'center',alignItems:'flex-end', }}>
             {/* {pages.map((page) => (
               <Button
