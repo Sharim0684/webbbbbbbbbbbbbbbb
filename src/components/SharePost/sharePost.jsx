@@ -181,13 +181,13 @@ const SharePostPage = () => {
     return (
         <container maxWidth="lg" sx={{}} >
             <Header />
-            <Container maxWidth="xl" sx={{ border: "", marginTop: '10px' }}>
+            <Container maxWidth="xl" sx={{ border: "", marginTop: 5 }}>
                 <Box
                     sx={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        minHeight: "100vh",
+                        minHeight: "auto",
                         padding: 0,
                         backgroundColor: "white",
                     }}
@@ -228,7 +228,7 @@ const SharePostPage = () => {
                                         </Button>
                                     </Stack>
                                 )}
-                                <FormGroup sx={{ marginTop: 0 }}>
+                                <FormGroup sx={{ marginTop: 3 }}>
                                     {platforms.map(({ name, icon, color }) => (
                                         <Stack key={name} direction="row" alignItems="center" spacing={2}>
                                             {showCheckboxes && (
