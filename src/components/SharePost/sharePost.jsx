@@ -14,7 +14,6 @@ import {
     Divider,
     Switch,
 } from "@mui/material";
-// import  Container from '@mui/system';
 import Header from "../Header";
 import { Close } from "@mui/icons-material";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -24,8 +23,6 @@ import XIcon from '@mui/icons-material/X';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
-
-
 import { useNavigate } from "react-router-dom";
 
 const CustomQuill = styled("div")({
@@ -39,9 +36,9 @@ const CustomQuill = styled("div")({
 
 const platforms = [
     { name: "Facebook", icon: <FacebookIcon color='primary' /> },
-    { name: "Twitter", icon: <XIcon color="primary" sx={{fontSize:'20px'}} /> },
-    { name: "Instagram", icon: <InstagramIcon color="primary"/> },
-    { name: "LinkedIn", icon: <LinkedInIcon color="primary"/> },
+    { name: "Twitter", icon: <XIcon color="primary" sx={{ fontSize: '20px' }} /> },
+    { name: "Instagram", icon: <InstagramIcon color="primary" /> },
+    { name: "LinkedIn", icon: <LinkedInIcon color="primary" /> },
 ];
 
 const SharePostPage = () => {
@@ -93,10 +90,11 @@ const SharePostPage = () => {
         setShowCheckboxes(false);
         setSelectAll(false);
     };
+
     const likesSwitch = (event) => {
         setTurnOffLikes(event.target.checked);
     };
-    
+
     const commentsSwitch = (event) => {
         setTurnOffComments(event.target.checked);
     };
@@ -133,20 +131,15 @@ const SharePostPage = () => {
         const fileUrl = URL.createObjectURL(file);
         const editor = quillRef.current.getEditor();
 
-
         editor.focus();
-
 
         const range = editor.getSelection() || { index: editor.getLength(), length: 0 };
 
         if (file.type.startsWith("image/")) {
-
             editor.insertEmbed(range.index, "image", fileUrl);
         } else if (file.type.startsWith("video/")) {
-
             editor.insertEmbed(range.index, "video", fileUrl);
         } else {
-
             editor.insertText(range.index, `[File: ${file.name}](${fileUrl})`);
         }
     };
@@ -181,7 +174,6 @@ const SharePostPage = () => {
         setPreviewOpen(false);
     };
 
-
     const modules = {
         toolbar: [
             [{ header: [1, 2, false] }],
@@ -198,7 +190,6 @@ const SharePostPage = () => {
                 <Box
                     sx={{
                         display: "flex",
-
                         minHeight: "auto",
                         padding: 0,
                         backgroundColor: "white",
@@ -206,7 +197,6 @@ const SharePostPage = () => {
                 >
                     <Box
                         sx={{
-
                             width: "100%",
                             padding: 5,
                             mt: 0,
@@ -214,9 +204,7 @@ const SharePostPage = () => {
                             backgroundColor: "white",
                         }}
                     >
-
                         <Stack direction={{ xs: "column", md: "row" }} spacing={10}>
-
                             <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3 }}>
                                 <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
                                     Select Platforms
@@ -267,17 +255,14 @@ const SharePostPage = () => {
                                                 }}
                                             >
                                                 <Stack direction="row" alignItems="center" spacing={1}>
-                                                    <Box sx={{ color, fontSize: 24 }}>{icon}</Box> {/* Increased icon size */}
-                                                    <span style={{ fontSize: 18 }}>{name}</span> {/* Increased text size */}
+                                                    <Box sx={{ color, fontSize: 24 }}>{icon}</Box>
+                                                    <span style={{ fontSize: 18 }}>{name}</span>
                                                 </Stack>
                                             </Button>
                                         </Stack>
                                     ))}
                                 </FormGroup>
-
                             </Box>
-
-
                             <Stack spacing={2} sx={{ width: { xs: "100%", md: "70%" } }}>
                                 <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left", fontSize: { xs: "1.5rem", md: "2rem" } }}>
                                     Share Your Post
@@ -304,7 +289,6 @@ const SharePostPage = () => {
                                         {errors.title}
                                     </Typography>
                                 )}
-
                                 <Typography variant="h6" sx={{ color: "#561f5b", textAlign: "left" }}>
                                     Post Content
                                 </Typography>
@@ -327,7 +311,6 @@ const SharePostPage = () => {
                                         {errors.platform}
                                     </Typography>
                                 )}
-
                                 <Button
                                     variant="contained"
                                     component="label"
@@ -342,30 +325,46 @@ const SharePostPage = () => {
                                 </Button>
                             </Stack>
                         </Stack>
-                        {/* <FormGroup>
+                        <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
                             <FormControlLabel
-                            control={<Switch defaultChecked color="secondary"/>} label="trunoff likes">
+                                control={
+                                    <Switch sx={{
 
-                            </FormControlLabel>
-                        </FormGroup> */}
-                       <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
-                       <FormControlLabel control={
-                                               <Switch
-                                               color="#561f5b"
-                                              checked={turnOffLikes}
-                                              onChange={likesSwitch}/>}
-                                              label="Turn off likes"
-                                                 />
-                       <FormControlLabel control={
-                                             <Switch
-                                             color="#561f5b"
-                                             checked={turnOffComments}
-                                             onChange={commentsSwitch}/> }
-                                             label="Turn off comments"/>
-                                              </Stack>
+                                        "& .MuiSwitch-switchBase.Mui-checked": {
+                                            color: "#561f5b",
+                                        },
+                                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                            backgroundColor: "#561f5b",
+                                        },
+                                    }}
 
+                                        checked={turnOffLikes}
+                                        onChange={likesSwitch}
 
+                                    />
+                                }
+                                label={turnOffLikes ? "Turn on likes" : "Turn off likes"}
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        sx={{
 
+                                            "& .MuiSwitch-switchBase.Mui-checked": {
+                                                color: "#561f5b",
+                                            },
+                                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                                backgroundColor: "#561f5b",
+                                            },
+                                        }}
+
+                                        checked={turnOffComments}
+                                        onChange={commentsSwitch}
+                                    />
+                                }
+                                label={turnOffComments ? "Turn on comments" : "Turn off comments"}
+                            />
+                        </Stack>
                         <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: -5 }}>
                             <Button
                                 variant="contained"
@@ -393,8 +392,6 @@ const SharePostPage = () => {
                             </Button>
                         </Stack>
                     </Box>
-
-
                     <Modal open={previewOpen} onClose={handleClosePreview}>
                         <Box
                             sx={{
@@ -418,20 +415,13 @@ const SharePostPage = () => {
                             >
                                 <Close />
                             </IconButton>
-
                             <Typography variant="h5" sx={{ mb: 2 }}>
                                 {postTitle}
                             </Typography>
-
-
                             <Box sx={{ mb: 2 }}>
                                 <div dangerouslySetInnerHTML={{ __html: postContent }} />
                             </Box>
-
-
                             {(uploadedFile || postContent.includes("http")) && <Divider sx={{ my: 2 }} />}
-
-
                             {uploadedFile && (
                                 <Box sx={{ mb: 2 }}>
                                     {uploadedFile.type.startsWith("image/") ? (
@@ -457,8 +447,6 @@ const SharePostPage = () => {
                                     )}
                                 </Box>
                             )}
-
-
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="h6">Selected Platforms:</Typography>
                                 <Stack direction="row" spacing={1}>
@@ -473,8 +461,6 @@ const SharePostPage = () => {
                                     })}
                                 </Stack>
                             </Box>
-
-
                             <Stack direction="row" spacing={2} justifyContent="flex-end">
                                 <Button
                                     variant="contained"
