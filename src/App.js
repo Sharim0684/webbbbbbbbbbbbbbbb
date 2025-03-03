@@ -13,6 +13,8 @@ import AutoPostSettings from './components/AutoPost/aotoPost';
 import SharePostPage from './components/SharePost/sharePost';
 import ThankYouPage from './components/ThankyouPage/thankyouPage';
 import SetupSchedulePage from './components/Post- Schedules/schedules';
+import Templates from './components/Templates';
+import Test from './components/Test';
 
 function App() {
   return (
@@ -29,13 +31,15 @@ function App() {
           <Route exact path='/autoPost' Component={AutoPostSettings} />
           <Route exact path='/sharePost' Component={SharePostPage} />
           <Route exact path='/thankYouPage' Component={ThankYouPage} />
-        
+          <Route exact path='/templates' Component={Templates} />
           <Route exact path='/schedulePage' Component={SetupSchedulePage} />
         </Routes>
       </BrowserRouter>
       {/* <Header/> */}
       {/* <DashBoard/> */}
       {/* <AccountsPage/> */}
+      {/* <Templates/> */}
+      {/* <Test/> */}
 
     </div>
   );

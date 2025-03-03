@@ -15,10 +15,11 @@ import {
 } from "@mui/material";
 // import  Container from '@mui/system';
 import Header from "../Header";
-import { Instagram, Close } from "@mui/icons-material";
-import Facebook from "@mui/icons-material/FacebookOutlined";
-import LinkedIn from "@mui/icons-material/LinkedIn";
-import Twitter from "@mui/icons-material/X";
+import { Close } from "@mui/icons-material";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import XIcon from '@mui/icons-material/X';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
@@ -34,10 +35,10 @@ const CustomQuill = styled("div")({
 });
 
 const platforms = [
-    { name: "Facebook", icon: <Facebook />, color: "#1877F2", limit: 200 },
-    { name: "LinkedIn", icon: <LinkedIn />, color: "#0077B5", limit: 250 },
-    { name: "X", icon: <Twitter />, color: "#000000", limit: 280 },
-    { name: "Instagram", icon: <Instagram />, color: "#C13584", limit: 220 },
+    { name: "Facebook", icon: <FacebookIcon color='primary' /> },
+    { name: "Twitter", icon: <XIcon color="primary" sx={{fontSize:'20px'}} /> },
+    { name: "Instagram", icon: <InstagramIcon color="primary"/> },
+    { name: "LinkedIn", icon: <LinkedInIcon color="primary"/> },
 ];
 
 const SharePostPage = () => {
