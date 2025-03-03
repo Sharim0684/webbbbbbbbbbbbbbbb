@@ -12,6 +12,7 @@ import {
     Modal,
     IconButton,
     Divider,
+    Switch,
 } from "@mui/material";
 // import  Container from '@mui/system';
 import Header from "../Header";
@@ -23,6 +24,8 @@ import XIcon from '@mui/icons-material/X';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
+
+
 import { useNavigate } from "react-router-dom";
 
 const CustomQuill = styled("div")({
@@ -47,6 +50,8 @@ const SharePostPage = () => {
     const [selectAll, setSelectAll] = useState(false);
     const [postContent, setPostContent] = useState("");
     const [postTitle, setPostTitle] = useState("");
+    const [turnOffLikes, setTurnOffLikes] = useState(false);
+    const [turnOffComments, setTurnOffComments] = useState(false);
     const [errors, setErrors] = useState({
         title: "",
         content: "",
@@ -87,6 +92,13 @@ const SharePostPage = () => {
         setSelectedPlatforms([]);
         setShowCheckboxes(false);
         setSelectAll(false);
+    };
+    const likesSwitch = (event) => {
+        setTurnOffLikes(event.target.checked);
+    };
+    
+    const commentsSwitch = (event) => {
+        setTurnOffComments(event.target.checked);
     };
 
     const handlePostChange = (content) => {
@@ -330,9 +342,31 @@ const SharePostPage = () => {
                                 </Button>
                             </Stack>
                         </Stack>
+                        {/* <FormGroup>
+                            <FormControlLabel
+                            control={<Switch defaultChecked color="secondary"/>} label="trunoff likes">
+
+                            </FormControlLabel>
+                        </FormGroup> */}
+                       <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
+                       <FormControlLabel control={
+                                               <Switch
+                                               color="#561f5b"
+                                              checked={turnOffLikes}
+                                              onChange={likesSwitch}/>}
+                                              label="Turn off likes"
+                                                 />
+                       <FormControlLabel control={
+                                             <Switch
+                                             color="#561f5b"
+                                             checked={turnOffComments}
+                                             onChange={commentsSwitch}/> }
+                                             label="Turn off comments"/>
+                                              </Stack>
 
 
-                        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: 3 }}>
+
+                        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: -5 }}>
                             <Button
                                 variant="contained"
                                 onClick={handlePublish}

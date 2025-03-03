@@ -32,6 +32,12 @@ function App() {
           <Route exact path='/verification' Component={VerificationPage} />
           <Route exact path='/set-new-paswd' Component={SetNewPassword} />
           <Route exact path='/add-accounts' Component={AccountsPage} />
+          <Route exact path='/sharePost' Component={SharePostPage} />
+          <Route exact path='/thankYouPage' Component={ThankYouPage} />
+          <Route exact path='/profile' Component={ProfilePage} />
+          <Route exact path='/history' Component={HistoryPage} />
+          <Route exact path='/schedulePage' Component={SetupSchedulePage} />
+          <Route exact path='/autoPost' Component={AutoPostSettings} />
         </Routes>
       </BrowserRouter>
       {/* <Header/> */}
