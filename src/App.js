@@ -6,10 +6,19 @@ import VerificationPage from './components/VerificationPage';
 import SetNewPassword from './components/SetNewPassword';
 
 import './App.css';
-// import Header from './components/Header';
-import DashBoard from './components/DashBoard';
-import AccountsPage from './components/AccountsPage';
 
+import DashBoard from './components/DashBoard';
+import AccountsPage from './components/AccountsPage/accounts-page';
+import AutoPostSettings from './components/AutoPost/aotoPost';
+import SharePostPage from './components/SharePost/sharePost';
+import ThankYouPage from './components/ThankyouPage/thankyouPage';
+import SetupSchedulePage from './components/Post- Schedules/schedules';
+<<<<<<< HEAD
+import ProfilePage from './components/profile/profile';
+import HistoryPage from './components/History/history';
+=======
+import Test from './components/Test';
+>>>>>>> da26e60d91e141ae7d4903082d16b814eca193a2
 
 function App() {
   return (
@@ -23,12 +32,11 @@ function App() {
           <Route exact path='/verification' Component={VerificationPage} />
           <Route exact path='/set-new-paswd' Component={SetNewPassword} />
           <Route exact path='/add-accounts' Component={AccountsPage} />
-         
         </Routes>
       </BrowserRouter>
-      {/* <Header/> 
-      <DashBoard/>
-       <AccountsPage/> */}
+      {/* <Header/> */}
+      {/* <DashBoard/> */}
+      {/* <AccountsPage/> */}
 
     </div>
   );
