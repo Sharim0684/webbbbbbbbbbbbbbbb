@@ -13,12 +13,12 @@ import AutoPostSettings from './components/AutoPost/aotoPost';
 import SharePostPage from './components/SharePost/sharePost';
 import ThankYouPage from './components/ThankyouPage/thankyouPage';
 import SetupSchedulePage from './components/Post- Schedules/schedules';
-<<<<<<< HEAD
+// <<<<<<< HEAD
 import ProfilePage from './components/profile/profile';
 import HistoryPage from './components/History/history';
-=======
-import Test from './components/Test';
->>>>>>> da26e60d91e141ae7d4903082d16b814eca193a2
+// =======
+
+// >>>>>>> da26e60d91e141ae7d4903082d16b814eca193a2
 
 function App() {
   return (
