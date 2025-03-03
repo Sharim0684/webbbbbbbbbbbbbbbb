@@ -43,7 +43,7 @@ const AccountsPage=()=>{
                             </Box> 
                             <Box className="account-pg-sidenav-box">
                                 <FacebookOutlinedIcon sx={{color:'blue',mr:2,fontSize:"30px"}} />
-                                <Typography variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >Facebook</Typography>
+                                <Typography  variant="h6" sx={{fontFamily:'poppins',color:'#561f5b'}} >Facebook</Typography>
                             </Box>
                             <Box className="account-pg-sidenav-box">
                                 <XIcon sx={{color:'white',backgroundColor:'black',mr:2,fontSize:"25px"}}/>

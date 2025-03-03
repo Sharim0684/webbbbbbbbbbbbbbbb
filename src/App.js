@@ -10,6 +10,7 @@ import './App.css';
 import DashBoard from './components/DashBoard';
 import AccountsPage from './components/AccountsPage';
 
+
 function App() {
   return (
     <div className="App">
@@ -22,11 +23,12 @@ function App() {
           <Route exact path='/verification' Component={VerificationPage} />
           <Route exact path='/set-new-paswd' Component={SetNewPassword} />
           <Route exact path='/add-accounts' Component={AccountsPage} />
+         
         </Routes>
       </BrowserRouter>
-      {/* <Header/> */}
-      {/* <DashBoard/> */}
-      {/* <AccountsPage/> */}
+      {/* <Header/> 
+      <DashBoard/>
+       <AccountsPage/> */}
 
     </div>
   );
