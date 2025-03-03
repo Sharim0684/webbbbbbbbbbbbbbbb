@@ -13,8 +13,12 @@ import AutoPostSettings from './components/AutoPost/aotoPost';
 import SharePostPage from './components/SharePost/sharePost';
 import ThankYouPage from './components/ThankyouPage/thankyouPage';
 import SetupSchedulePage from './components/Post- Schedules/schedules';
+<<<<<<< HEAD
 import ProfilePage from './components/profile/profile';
 import HistoryPage from './components/History/history';
+=======
+import Test from './components/Test';
+>>>>>>> da26e60d91e141ae7d4903082d16b814eca193a2
 
 function App() {
   return (
@@ -31,15 +35,19 @@ function App() {
           <Route exact path='/autoPost' Component={AutoPostSettings} />
           <Route exact path='/sharePost' Component={SharePostPage} />
           <Route exact path='/thankYouPage' Component={ThankYouPage} />
+<<<<<<< HEAD
           <Route exact path='/profile' Component={ProfilePage} />
           <Route exact path='/history' Component={HistoryPage} />
+=======
+>>>>>>> da26e60d91e141ae7d4903082d16b814eca193a2
           <Route exact path='/schedulePage' Component={SetupSchedulePage} />
         </Routes>
       </BrowserRouter>
      
       {/* <DashBoard/> */}
       {/* <AccountsPage/> */}
-
+      {/* <Templates/> */}
+      {/* <Test/> */}
     </div>
   );
 }
