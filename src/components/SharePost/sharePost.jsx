@@ -185,8 +185,7 @@ const SharePostPage = () => {
                 <Box
                     sx={{
                         display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
+
                         minHeight: "auto",
                         padding: 0,
                         backgroundColor: "white",
@@ -194,16 +193,16 @@ const SharePostPage = () => {
                 >
                     <Box
                         sx={{
-                            maxWidth: 800,
+
                             width: "100%",
-                            padding: 0,
+                            padding: 5,
                             mt: 0,
                             borderRadius: 2,
                             backgroundColor: "white",
                         }}
                     >
 
-                        <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+                        <Stack direction={{ xs: "column", md: "row" }} spacing={10}>
 
                             <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3 }}>
                                 <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
@@ -213,7 +212,7 @@ const SharePostPage = () => {
                                     <Button
                                         variant="contained"
                                         onClick={() => setShowCheckboxes(true)}
-                                        sx={{ marginLeft: 20, backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45", } }}
+                                        sx={{ marginLeft: 20, mt: 3, backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45", } }}
                                     >
                                         Select
                                     </Button>
@@ -228,21 +227,41 @@ const SharePostPage = () => {
                                         </Button>
                                     </Stack>
                                 )}
-                                <FormGroup sx={{ marginTop: 3 }}>
+                                <FormGroup sx={{ marginTop: 3, gap: 2 }}>
                                     {platforms.map(({ name, icon, color }) => (
                                         <Stack key={name} direction="row" alignItems="center" spacing={2}>
                                             {showCheckboxes && (
-                                                <Checkbox checked={selectedPlatforms.includes(name)} onChange={() => handleCheckboxClick(name)} sx={{ color: "#561f5b", "&.Mui-checked": { color: "#561f5b" } }} />
+                                                <Checkbox
+                                                    checked={selectedPlatforms.includes(name)}
+                                                    onChange={() => handleCheckboxClick(name)}
+                                                    sx={{
+                                                        color: "#561f5b",
+                                                        "&.Mui-checked": { color: "#561f5b" }
+                                                    }}
+                                                />
                                             )}
-                                            <Button onClick={() => handlePlatformClick(name)} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start", backgroundColor: selectedPlatforms.includes(name) ? "#561f5b" : "transparent", color: selectedPlatforms.includes(name) ? "white" : "#561f5b", "&:hover": { backgroundColor: "#420f45", color: "white" }, textTransform: "none", width: "100%" }}>
+                                            <Button
+                                                onClick={() => handlePlatformClick(name)}
+                                                sx={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "flex-start",
+                                                    backgroundColor: selectedPlatforms.includes(name) ? "#561f5b" : "transparent",
+                                                    color: selectedPlatforms.includes(name) ? "white" : "#561f5b",
+                                                    "&:hover": { backgroundColor: "#420f45", color: "white" },
+                                                    textTransform: "none",
+                                                    width: "50%",
+                                                }}
+                                            >
                                                 <Stack direction="row" alignItems="center" spacing={1}>
-                                                    <Box sx={{ color }}>{icon}</Box>
-                                                    <span>{name}</span>
+                                                    <Box sx={{ color, fontSize: 24 }}>{icon}</Box> {/* Increased icon size */}
+                                                    <span style={{ fontSize: 18 }}>{name}</span> {/* Increased text size */}
                                                 </Stack>
                                             </Button>
                                         </Stack>
                                     ))}
                                 </FormGroup>
+
                             </Box>
 
 

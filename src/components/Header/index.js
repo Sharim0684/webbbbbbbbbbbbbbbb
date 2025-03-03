@@ -80,13 +80,34 @@ function Header() {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center" sx={{ color: '#561f5b', fontFamily: 'poppins', fontWeight: '600', fontSize: '16px' }}>
-                      {page}
-                    </Typography>
-                  </MenuItem>
-                ))}
+                 {pages.map((page) => {
+                  const route =
+                    page === 'Accounts'
+                      ? '/add-accounts'
+                      : page === 'Post Schedules'
+                      ? '/schedulePage'
+                      : page === 'Share Now'
+                      ? '/sharePost'
+                      : '/';
+
+                  return (
+                    <Link key={page} to={route} style={{ textDecoration: 'none', width: '100%' }}>
+                      <MenuItem onClick={handleCloseNavMenu}>
+                        <Typography
+                          textAlign="center"
+                          sx={{
+                            color: '#561f5b',
+                            fontFamily: 'poppins',
+                            fontWeight: '600',
+                            fontSize: '16px',
+                          }}
+                        >
+                          {page}
+                        </Typography>
+                      </MenuItem>
+                    </Link>
+                  );
+                })}
               </Menu>
             </Box>
           ) : (
@@ -136,9 +157,9 @@ function Header() {
                 <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Profile</Typography>
               </MenuItem>
               </Link>
-              <Link style={{ textDecoration: 'none' }} to="/account">
+              <Link style={{ textDecoration: 'none' }} to="/history">
               <MenuItem onClick={handleCloseUserMenu}>
-                <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Account</Typography>
+                <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>History</Typography>
               </MenuItem>
               </Link>
               <Link style={{ textDecoration: 'none' }} to="/login">
