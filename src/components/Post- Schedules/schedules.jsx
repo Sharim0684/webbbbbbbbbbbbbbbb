@@ -83,7 +83,7 @@ const SetupSchedulePage = () => {
         };
 
         // Navigate to History Page and pass the schedule data
-        navigate("/account", { state: { newSchedule: scheduleData } });
+        navigate("/history", { state: { newSchedule: scheduleData } });
     };
 
     const handleCancel = () => {
