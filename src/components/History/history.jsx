@@ -153,7 +153,7 @@ const HistoryPage = () => {
             >
                 <Box sx={{ width: isSmallScreen ? "100%" : "50%", height: "auto", backgroundColor: "white", borderRadius: 0, boxShadow: 0 }}>
                     <Typography variant="h4" sx={{ color: "#561f5b", mb: 4, textAlign: "center" }}>
-                        Post History
+                        Resend Post 
                     </Typography>
 
                     {/* Calendar Navigation */}

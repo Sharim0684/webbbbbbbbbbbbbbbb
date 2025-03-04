@@ -159,7 +159,7 @@ function Header() {
               </Link>
               <Link style={{ textDecoration: 'none' }} to="/history">
               <MenuItem onClick={handleCloseUserMenu}>
-                <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>History</Typography>
+                <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Resend Post </Typography>
               </MenuItem>
               </Link>
               <Link style={{ textDecoration: 'none' }} to="/login">
