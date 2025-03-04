@@ -192,8 +192,8 @@ const HistoryPage = () => {
                                             padding: 1,
                                             backgroundColor: post
                                                 ? post.status === "posted"
-                                                    ? "#e8f5e9"
-                                                    : "#ffebee"
+                                                    ? "#c8e6c9"
+                                                    : "#e0e0e0"
                                                 : "#f5f5f5",
                                             height: "100%",
                                             display: "flex",
@@ -205,7 +205,7 @@ const HistoryPage = () => {
                                                 backgroundColor: post
                                                     ? post.status === "posted"
                                                         ? "#c8e6c9"
-                                                        : "#ffcdd2"
+                                                        : "#c8e6c9"
                                                     : "#e0e0e0",
                                             },
                                         }}
