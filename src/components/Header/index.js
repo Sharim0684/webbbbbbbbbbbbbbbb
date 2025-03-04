@@ -15,7 +15,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import BrandLogo from '../Assets/Innovators-Tech-Black 1.svg';
 
-const pages = ['Accounts',  'Post Schedules', 'Share Now', ];
+const pages = ['Accounts',  'Share Now', ];
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -84,8 +84,7 @@ function Header() {
                   const route =
                     page === 'Accounts'
                       ? '/add-accounts'
-                      : page === 'Post Schedules'
-                      ? '/schedulePage'
+                     
                       : page === 'Share Now'
                       ? '/sharePost'
                       : '/';
@@ -122,11 +121,11 @@ function Header() {
                   Share Now
                 </Typography>
               </Link>
-              <Link style={{ textDecoration: 'none' }} to="/schedulePage">
+              {/* <Link style={{ textDecoration: 'none' }} to="/schedulePage">
                 <Typography variant="hr" sx={{ mr: 3, color: '#561f5b', fontFamily: 'poppins', fontWeight: '600', fontSize: '16px' }}>
                   Post Schedules
                 </Typography>
-              </Link>
+              </Link> */}
             </Box>
           )}
 

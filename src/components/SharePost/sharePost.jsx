@@ -49,6 +49,7 @@ const SharePostPage = () => {
     const [postTitle, setPostTitle] = useState("");
     const [turnOffLikes, setTurnOffLikes] = useState(false);
     const [turnOffComments, setTurnOffComments] = useState(false);
+    const [scheduleError, setScheduleError] = useState("");
     const [errors, setErrors] = useState({
         title: "",
         content: "",
@@ -57,6 +58,10 @@ const SharePostPage = () => {
     const [error, setError] = useState("");
     const [uploadedFile, setUploadedFile] = useState(null);
     const [previewOpen, setPreviewOpen] = useState(false);
+    const [scheduleOpen, setScheduleOpen] = useState(false);
+    const [scheduleDate, setScheduleDate] = useState("");
+    const [scheduleTime, setScheduleTime] = useState("");
+    const [reminderEnabled, setReminderEnabled] = useState(false);
     const quillRef = useRef(null);
     const navigate = useNavigate();
 
@@ -166,8 +171,37 @@ const SharePostPage = () => {
         navigate("/thankYouPage");
     };
 
+    
     const handleSetupSchedule = () => {
-        navigate("/schedulePage");
+        let newErrors = { title: "", content: "", platform: "" };
+
+        if (!postTitle.trim()) newErrors.title = "Enter Post Title";
+        if (!postContent.trim()) newErrors.content = "Enter Post Content";
+        if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
+
+        setErrors(newErrors);
+
+        if (!newErrors.title && !newErrors.content && !newErrors.platform) {
+            setScheduleOpen(true);
+        }
+    };
+    const handleSchedule = (date, time) => {
+        if (!date || !time) {
+            setScheduleError("Please select both date and time.");
+            return;
+        }
+
+        setScheduleError("");
+        setScheduleDate(date);
+        setScheduleTime(time);
+        console.log("Post scheduled for:", date, time);
+        navigate("/history");
+    };
+
+    const handleReminderToggle = (enabled) => {
+        setReminderEnabled(enabled);
+        // Add logic to handle reminder
+        console.log("Reminder enabled:", enabled);
     };
 
     const handleClosePreview = () => {
@@ -184,7 +218,7 @@ const SharePostPage = () => {
     };
 
     return (
-        <container maxWidth="lg" sx={{}} >
+        <container maxWidth="lg">
             <Header />
             <Container maxWidth="xl" sx={{ border: "", marginTop: 5 }}>
                 <Box
@@ -205,8 +239,7 @@ const SharePostPage = () => {
                         }}
                     >
                         <Stack direction={{ xs: "column", md: "row" }} spacing={10}>
-
-                            <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3, }}>
+                            <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3 }}>
                                 <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
                                     Select Platforms
                                 </Typography>
@@ -214,7 +247,7 @@ const SharePostPage = () => {
                                     <Button
                                         variant="contained"
                                         onClick={() => setShowCheckboxes(true)}
-                                        sx={{marginLeft: 5, mt: 3, backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45", } }}
+                                        sx={{ marginLeft: 5, mt: 3, backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}
                                     >
                                         Select
                                     </Button>
@@ -229,8 +262,8 @@ const SharePostPage = () => {
                                         </Button>
                                     </Stack>
                                 )}
-                                <FormGroup sx={{ marginTop: 3, gap: 2,border:'' }}>
-                                    {platforms.map(({ name, icon, color }) => (
+                                <FormGroup sx={{ marginTop: 3, gap: 2, border: '' }}>
+                                    {platforms.map(({ name, icon }) => (
                                         <Stack key={name} direction="row" alignItems="center" spacing={2}>
                                             {showCheckboxes && (
                                                 <Checkbox
@@ -248,18 +281,15 @@ const SharePostPage = () => {
                                                     display: "flex",
                                                     alignItems: "center",
                                                     justifyContent: "flex-start",
-                                                    // backgroundColor: selectedPlatforms.includes(name) ? "#561f5b" : "transparent",
                                                     color: selectedPlatforms.includes(name) ? "#561f5b" : "561f5b",
                                                     "&:hover": { backgroundColor: "#561f5b", color: "white" },
                                                     textTransform: "none",
                                                     width: "50%",
                                                 }}
                                             >
-                                                <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3} sx={{}}>
-                                                    {/* <Box sx={{ color, fontSize: 24, mr:'4' }}>{icon}</Box> Increased icon size */}
-                                                    {/* <span style={{ fontSize: 18 }}>{name}</span> Increased text size */}
+                                                <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
                                                     {icon}
-                                                    <Typography variant="h6" sx={{}}>{name}</Typography>
+                                                    <Typography variant="h6">{name}</Typography>
                                                 </Stack>
                                             </Button>
                                         </Stack>
@@ -268,7 +298,7 @@ const SharePostPage = () => {
                             </Box>
                             <Stack spacing={2} sx={{ width: { xs: "100%", md: "70%" } }}>
                                 <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left", fontSize: { xs: "1.5rem", md: "2rem" } }}>
-                                    Share Your Post
+                                    Create Post
                                 </Typography>
                                 <TextField
                                     label="Post Title"
@@ -331,19 +361,17 @@ const SharePostPage = () => {
                         <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
                             <FormControlLabel
                                 control={
-                                    <Switch sx={{
-
-                                        "& .MuiSwitch-switchBase.Mui-checked": {
-                                            color: "#561f5b",
-                                        },
-                                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                                            backgroundColor: "#561f5b",
-                                        },
-                                    }}
-
+                                    <Switch
+                                        sx={{
+                                            "& .MuiSwitch-switchBase.Mui-checked": {
+                                                color: "#561f5b",
+                                            },
+                                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                                backgroundColor: "#561f5b",
+                                            },
+                                        }}
                                         checked={turnOffLikes}
                                         onChange={likesSwitch}
-
                                     />
                                 }
                                 label={turnOffLikes ? "Turn on likes" : "Turn off likes"}
@@ -352,7 +380,6 @@ const SharePostPage = () => {
                                 control={
                                     <Switch
                                         sx={{
-
                                             "& .MuiSwitch-switchBase.Mui-checked": {
                                                 color: "#561f5b",
                                             },
@@ -360,7 +387,6 @@ const SharePostPage = () => {
                                                 backgroundColor: "#561f5b",
                                             },
                                         }}
-
                                         checked={turnOffComments}
                                         onChange={commentsSwitch}
                                     />
@@ -396,8 +422,7 @@ const SharePostPage = () => {
                         </Stack>
                     </Box>
 
-
-                    <Modal open={previewOpen} >
+                    <Modal open={previewOpen} onClose={handleClosePreview}>
                         <Box
                             sx={{
                                 position: "absolute",
@@ -420,80 +445,162 @@ const SharePostPage = () => {
                             >
                                 <Close />
                             </IconButton>
-
                             <Box>
-                                <Typography variant="h5" sx={{ mb: 2,color:'#561f5b' }}>
+                                <Typography variant="h5" sx={{ mb: 2, color: '#561f5b' }}>
                                     {postTitle}
                                 </Typography>
-                                <Box sx={{ mb: 2,fontSize:'18px',fontWeight:"500",fontFamily:'Poppins',color:'#424242', }}>
-                                <div dangerouslySetInnerHTML={{ __html: postContent }} />
-                            </Box>
-
-
-                            {(uploadedFile || postContent.includes("http")) && <Divider sx={{ my: 2 }} />}
-                            {uploadedFile && (
-                                <Box sx={{ mb: 2 }}>
-                                    {uploadedFile.type.startsWith("image/") ? (
-                                        <img
-                                            src={URL.createObjectURL(uploadedFile)}
-                                            alt="Uploaded"
-                                            style={{ width: "200px", height: "200px", borderRadius: 4 }}
-                                        />
-                                    ) : uploadedFile.type.startsWith("video/") ? (
-                                        <video
-                                            controls
-                                            style={{ width: "200px", height: "200px", borderRadius: 4 }}
-                                        >
-                                            <source src={URL.createObjectURL(uploadedFile)} type={uploadedFile.type} />
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    ) : (
-                                        <Typography variant="body1">
-                                            <a href={URL.createObjectURL(uploadedFile)} target="_blank" rel="noopener noreferrer">
-                                                {uploadedFile.name}
-                                            </a>
-                                        </Typography>
-                                    )}
+                                <Box sx={{ mb: 2, fontSize: '18px', fontWeight: "500", fontFamily: 'Poppins', color: '#424242' }}>
+                                    <div dangerouslySetInnerHTML={{ __html: postContent }} />
                                 </Box>
-                            )}
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="h6">Selected Platforms:</Typography>
-                                <Stack direction="row" spacing={1}>
-                                    {selectedPlatforms.map((platform) => {
-                                        const platformData = platforms.find((p) => p.name === platform);
-                                        return (
-                                            <Box key={platform} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                <Box sx={{ color: platformData.color }}>{platformData.icon}</Box>
-                                                <Typography>{platformData.name}</Typography>
-                                            </Box>
-                                        );
-                                    })}
+                                {(uploadedFile || postContent.includes("http")) && <Divider sx={{ my: 2 }} />}
+                                {uploadedFile && (
+                                    <Box sx={{ mb: 2 }}>
+                                        {uploadedFile.type.startsWith("image/") ? (
+                                            <img
+                                                src={URL.createObjectURL(uploadedFile)}
+                                                alt="Uploaded"
+                                                style={{ width: "200px", height: "200px", borderRadius: 4 }}
+                                            />
+                                        ) : uploadedFile.type.startsWith("video/") ? (
+                                            <video
+                                                controls
+                                                style={{ width: "200px", height: "200px", borderRadius: 4 }}
+                                            >
+                                                <source src={URL.createObjectURL(uploadedFile)} type={uploadedFile.type} />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        ) : (
+                                            <Typography variant="body1">
+                                                <a href={URL.createObjectURL(uploadedFile)} target="_blank" rel="noopener noreferrer">
+                                                    {uploadedFile.name}
+                                                </a>
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                )}
+                                <Box sx={{ mb: 2 }}>
+                                    <Typography variant="h6">Selected Platforms:</Typography>
+                                    <Stack direction="row" spacing={1}>
+                                        {selectedPlatforms.map((platform) => {
+                                            const platformData = platforms.find((p) => p.name === platform);
+                                            return (
+                                                <Box key={platform} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                    <Box sx={{ color: platformData.color }}>{platformData.icon}</Box>
+                                                    <Typography>{platformData.name}</Typography>
+                                                </Box>
+                                            );
+                                        })}
+                                    </Stack>
+                                </Box>
+                                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleEdit}
+                                        sx={{
+                                            backgroundColor: "#561f5b",
+                                            color: "white",
+                                            "&:hover": { backgroundColor: "#420f45" },
+                                        }}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handlePost}
+                                        sx={{
+                                            backgroundColor: "#561f5b",
+                                            color: "white",
+                                            "&:hover": { backgroundColor: "#420f45" },
+                                        }}
+                                    >
+                                        Post
+                                    </Button>
                                 </Stack>
                             </Box>
-                            <Stack direction="row" spacing={2} justifyContent="flex-end">
+                        </Box>
+                    </Modal>
+
+                    <Modal open={scheduleOpen} onClose={() => setScheduleOpen(false)}>
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                width: 400,
+                                bgcolor: "background.paper",
+                                boxShadow: 24,
+                                p: 4,
+                                borderRadius: 2,
+                            }}
+                        >
+                            <Typography variant="h6" sx={{ mb: 2, color: "#561f5b" }}>
+                                Schedule Post
+                            </Typography>
+                            <TextField
+                                label="Date"
+                                type="date"
+                                fullWidth
+                                value={scheduleDate}
+                                onChange={(e) => setScheduleDate(e.target.value)}
+                                InputLabelProps={{ shrink: true }}
+                                sx={{ mb: 2 }}
+                            />
+                            <TextField
+                                label="Time"
+                                type="time"
+                                fullWidth
+                                value={scheduleTime}
+                                onChange={(e) => setScheduleTime(e.target.value)}
+                                InputLabelProps={{ shrink: true }}
+                                sx={{ mb: 2 }}
+                            />
+                            {scheduleError && (
+                                <Typography color="error" sx={{ mb: 2 }}>
+                                    {scheduleError}
+                                </Typography>
+                            )}
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={reminderEnabled}
+                                        onChange={(e) => handleReminderToggle(e.target.checked)}
+                                        sx={{
+                                            "& .MuiSwitch-switchBase.Mui-checked": {
+                                                color: "#561f5b",
+                                            },
+                                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                                backgroundColor: "#561f5b",
+                                            },
+                                        }}
+                                    />
+                                }
+                                label="Set Reminder"
+                            />
+                            <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
                                 <Button
                                     variant="contained"
-                                    color="primary"
-                                    onClick={handleEdit}
+                                    onClick={() => handleSchedule(scheduleDate, scheduleTime)}
                                     sx={{
                                         backgroundColor: "#561f5b",
                                         color: "white",
                                         "&:hover": { backgroundColor: "#420f45" },
                                     }}
                                 >
-                                    Edit
+                                    Schedule
                                 </Button>
                                 <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handlePost}
+                                    variant="outlined"
+                                    onClick={() => setScheduleOpen(false)}
                                     sx={{
-                                        backgroundColor: "#561f5b",
-                                        color: "white",
-                                        "&:hover": { backgroundColor: "#420f45" },
+                                        borderColor: "#561f5b",
+                                        color: "#561f5b",
+                                        "&:hover": { borderColor: "#420f45" },
                                     }}
                                 >
-                                    Post
+                                    Cancel
                                 </Button>
                             </Stack>
                         </Box>

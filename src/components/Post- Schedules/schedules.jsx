@@ -19,7 +19,7 @@ import {
     Menu,
     IconButton,
 } from "@mui/material";
-import EventIcon from "@mui/icons-material/Event"; // Icon for selected sleep days
+import EventIcon from "@mui/icons-material/Event"; 
 import Header from "../Header";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 
 const SetupSchedulePage = () => {
     const [tabValue, setTabValue] = useState(0);
-    const [title, setTitle] = useState();
+    const [title, setTitle] = useState("");
     const [startDate, setStartDate] = useState(new Date());
     const [postInterval, setPostInterval] = useState(1);
     const [orderPostsBy, setOrderPostsBy] = useState("latest_to_old");
@@ -43,28 +43,25 @@ const SetupSchedulePage = () => {
         Sunday: false,
     });
     const [selectedSleepDays, setSelectedSleepDays] = useState([]);
-    const [anchorEl, setAnchorEl] = useState(null); // For sleep days menu
+    const [anchorEl, setAnchorEl] = useState(null); 
+    const [errors, setErrors] = useState({});
 
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-    // Open sleep days menu
     const handleOpenMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    // Close sleep days menu
     const handleCloseMenu = () => {
         setAnchorEl(null);
     };
 
-    // Handle sleep day selection
     const handleSleepDayChange = (day) => (event) => {
         const updatedSleepDays = { ...sleepDays, [day]: event.target.checked };
         setSleepDays(updatedSleepDays);
 
-        // Update selected sleep days
         if (event.target.checked) {
             setSelectedSleepDays([...selectedSleepDays, day]);
         } else {
@@ -72,17 +69,35 @@ const SetupSchedulePage = () => {
         }
     };
 
-    // Handle create schedule
     const handleCreateSchedule = () => {
+        const newErrors = {};
+
+        if (!title) {
+            newErrors.title = "Title is required";
+        }
+        if (!startDate) {
+            newErrors.startDate = "Start date is required";
+        }
+        if (!postInterval) {
+            newErrors.postInterval = "Post interval is required";
+        }
+        if (selectedSleepDays.length === 0) {
+            newErrors.sleepDays = "At least one sleep day is required";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
         const scheduleData = {
-            id: Date.now(), // Unique ID for the schedule
+            id: Date.now(), 
             title,
-            date: startDate.toISOString().split("T")[0], // Format date as YYYY-MM-DD
-            platforms: ["Facebook", "Twitter"], // Example platforms
-            status: "not posted", // Default status
+            date: startDate.toISOString().split("T")[0], 
+            platforms: ["Facebook", "Twitter"], 
+            status: "not posted", 
         };
 
-        // Navigate to History Page and pass the schedule data
         navigate("/history", { state: { newSchedule: scheduleData } });
     };
 
@@ -92,9 +107,9 @@ const SetupSchedulePage = () => {
 
     return (
         <Box>
-    <Box sx={{ width: "100%" }}>
-        <Header />
-    </Box>
+            <Box sx={{ width: "100%" }}>
+                <Header />
+            </Box>
             <Container
                 style={{
                     backgroundColor: "white",
@@ -125,10 +140,8 @@ const SetupSchedulePage = () => {
                             Create Schedule
                         </Typography>
 
-                        {/* Settings Tab Content */}
                         {tabValue === 0 && (
                             <Box>
-                                {/* Title */}
                                 <TextField
                                     label="Title"
                                     value={title}
@@ -145,17 +158,11 @@ const SetupSchedulePage = () => {
                                             color: "#561f5b",
                                         },
                                     }}
+                                    error={!!errors.title}
+                                    helperText={errors.title}
                                 />
 
-                                {/* Start Date & Time and Post Interval */}
-                                <Grid container spacing={2} sx={{ mb: 3,"& .MuiOutlinedInput-root": {
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "#561f5b",
-                                            },
-                                        },
-                                        "& .MuiInputLabel-root.Mui-focused": {
-                                            color: "#561f5b",
-                                        }, }}>
+                                <Grid container spacing={2} sx={{ mb: 3 }}>
                                     <Grid item xs={12} sm={6}>
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                             <DateTimePicker
@@ -163,25 +170,34 @@ const SetupSchedulePage = () => {
                                                 value={startDate}
                                                 onChange={(newValue) => setStartDate(newValue)}
                                                 renderInput={(params) => (
-                                                    <TextField {...params} fullWidth />
+                                                    <TextField 
+                                                        {...params} 
+                                                        fullWidth 
+                                                        error={!!errors.startDate}
+                                                        helperText={errors.startDate}
+                                                        sx={{
+                                                            "& .MuiPickersDay-daySelected": {
+                                                                backgroundColor: "red",
+                                                                color: "white",
+                                                            },
+                                                            "& .MuiPickersDay-today": {
+                                                                backgroundColor: "orange",
+                                                                color: "white",
+                                                            },
+                                                        }}
+                                                    />
                                                 )}
                                             />
                                         </LocalizationProvider>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} sx={{ mb: 0,"& .MuiOutlinedInput-root": {
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "#561f5b",
-                                            },
-                                        },
-                                        "& .MuiInputLabel-root.Mui-focused": {
-                                            color: "#561f5b",
-                                        }, }}>
+                                    <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth>
                                             <InputLabel>Post Interval</InputLabel>
                                             <Select
                                                 value={postInterval}
                                                 onChange={(e) => setPostInterval(e.target.value)}
                                                 label="Post Interval"
+                                                error={!!errors.postInterval}
                                             >
                                                 <MenuItem value={1}>Minute</MenuItem>
                                                 <MenuItem value={60}>Hour</MenuItem>
@@ -190,77 +206,15 @@ const SetupSchedulePage = () => {
                                                 <MenuItem value={43200}>Month</MenuItem>
                                                 <MenuItem value={525600}>Year</MenuItem>
                                             </Select>
+                                            {errors.postInterval && (
+                                                <Typography color="error" variant="body2">
+                                                    {errors.postInterval}
+                                                </Typography>
+                                            )}
                                         </FormControl>
                                     </Grid>
                                 </Grid>
 
-                                {/* Order Posts By */}
-                                {/* <FormControl fullWidth sx={{ mb: 0,"& .MuiOutlinedInput-root": {
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "#561f5b",
-                                            },
-                                        },
-                                        "& .MuiInputLabel-root.Mui-focused": {
-                                            color: "#561f5b",
-                                        },  }}>
-                                    <InputLabel>Order Posts By</InputLabel>
-                                    <Select
-                                        value={orderPostsBy}
-                                        onChange={(e) => setOrderPostsBy(e.target.value)}
-                                        label="Order Posts By"
-                                    >
-                                        <MenuItem value="latest_to_old">Start from the latest to old posts</MenuItem>
-                                        <MenuItem value="old_to_latest">Start from the oldest to new posts</MenuItem>
-                                        <MenuItem value="random">Randomly</MenuItem>
-                                        <MenuItem value="random_no_duplicates">Randomly without duplicates</MenuItem>
-                                    </Select>
-                                </FormControl> */}
-
-                                {/* Sleep Timer */}
-                                {/* <Box sx={{ mb: 0,"& .MuiOutlinedInput-root": {
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "#561f5b",
-                                            },
-                                        },
-                                        "& .MuiInputLabel-root.Mui-focused": {
-                                            color: "#561f5b",
-                                        },  }}>
-                                    <Typography variant="h6" sx={{ mb: 0 }}>
-                                        Set a Sleep Timer
-                                    </Typography>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="Start Time"
-                                                type="time"
-                                                value={sleepTimer.start}
-                                                onChange={(e) =>
-                                                    setSleepTimer({ ...sleepTimer, start: e.target.value })
-                                                }
-                                                fullWidth
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="End Time"
-                                                type="time"
-                                                value={sleepTimer.end}
-                                                onChange={(e) =>
-                                                    setSleepTimer({ ...sleepTimer, end: e.target.value })
-                                                }
-                                                fullWidth
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Box> */}
-
-                                {/* Sleep Days */}
                                 <Box sx={{ mb: 2 }}>
                                     <Typography variant="h6" sx={{ mb: 2 }}>
                                         Set Sleep Days
@@ -271,6 +225,8 @@ const SetupSchedulePage = () => {
                                         fullWidth
                                         sx={{ mt: 0 }}
                                         disabled
+                                        error={!!errors.sleepDays}
+                                        helperText={errors.sleepDays}
                                         InputProps={{
                                             endAdornment: (
                                                 <IconButton onClick={handleOpenMenu}>
@@ -306,8 +262,7 @@ const SetupSchedulePage = () => {
                                     </Menu>
                                 </Box>
 
-                                {/* Buttons */}
-                                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2,mt:2, }}>
+                                <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 2 }}>
                                     <Button
                                         variant="contained"
                                         color="secondary"
@@ -337,7 +292,7 @@ const SetupSchedulePage = () => {
                     </Box>
                 </Box>
             </Container>
-            </Box>
+        </Box>
     );
 };
 

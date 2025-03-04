@@ -27,7 +27,7 @@ const HistoryPage = () => {
             title: "Post 1",
             date: "2025-02-26",
             platforms: ["Facebook", "Twitter"],
-            status: "posted", // or "pending"
+            status: "posted", 
         },
         {
             id: 2,
@@ -53,10 +53,8 @@ const HistoryPage = () => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-    // Platforms available for selection
     const platformsList = ["Facebook", "Twitter", "Instagram", "LinkedIn"];
 
-    // Open popup for post details
     const handleOpenPopup = (event, post) => {
         setSelectedPost(post);
         setEditData({ title: post.title, date: post.date, platforms: post.platforms });
@@ -64,19 +62,16 @@ const HistoryPage = () => {
         setAnchorEl(event.currentTarget);
     };
 
-    // Close popup
     const handleClosePopup = () => {
         setSelectedPost(null);
         setSelectedPlatforms([]);
         setAnchorEl(null);
     };
 
-    // Handle edit changes
     const handleEditChange = (field, value) => {
         setEditData({ ...editData, [field]: value });
     };
 
-    // Handle platform selection
     const handlePlatformChange = (platform) => (event) => {
         if (event.target.checked) {
             setSelectedPlatforms([...selectedPlatforms, platform]);
@@ -85,7 +80,6 @@ const HistoryPage = () => {
         }
     };
 
-    // Save changes for pending posts
     const handleSaveChanges = () => {
         const updatedPosts = posts.map((post) =>
             post.id === selectedPost.id
@@ -96,24 +90,20 @@ const HistoryPage = () => {
         handleClosePopup();
     };
 
-    // Delete a post
     const handleDeletePost = (postId) => {
         const updatedPosts = posts.filter((post) => post.id !== postId);
         setPosts(updatedPosts);
         handleClosePopup();
     };
 
-    // Navigate to the previous month
     const handlePreviousMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
     };
 
-    // Navigate to the next month
     const handleNextMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
     };
 
-    // Generate calendar days for the current month
     const generateCalendarDays = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -124,7 +114,7 @@ const HistoryPage = () => {
 
         const days = [];
         for (let i = 0; i < startingDay; i++) {
-            days.push(null); // Empty days before the first day of the month
+            days.push(null); 
         }
         for (let i = 1; i <= daysInMonth; i++) {
             days.push(new Date(year, month, i).toISOString().split("T")[0]);
@@ -132,7 +122,6 @@ const HistoryPage = () => {
         return days;
     };
 
-    // Days of the week
     const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     return (
@@ -156,7 +145,6 @@ const HistoryPage = () => {
                         Resend Post 
                     </Typography>
 
-                    {/* Calendar Navigation */}
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mb: 4 }}>
                         <IconButton onClick={handlePreviousMonth}>
                             <ArrowBackIosIcon />
@@ -169,9 +157,7 @@ const HistoryPage = () => {
                         </IconButton>
                     </Box>
 
-                    {/* Custom Calendar */}
                     <Grid container spacing={1}>
-                        {/* Days of the Week */}
                         {daysOfWeek.map((day) => (
                             <Grid item xs={12 / 7} key={day}>
                                 <Typography variant="body1" sx={{ textAlign: "center", fontWeight: "bold" }}>
@@ -180,9 +166,9 @@ const HistoryPage = () => {
                             </Grid>
                         ))}
 
-                        {/* Calendar Days */}
                         {generateCalendarDays().map((day, index) => {
                             const post = posts.find((p) => p.date === day);
+                            const isToday = day === new Date().toISOString().split("T")[0]; // Check if the day is today
                             return (
                                 <Grid item xs={12 / 7} key={index}>
                                     <Box
@@ -190,11 +176,14 @@ const HistoryPage = () => {
                                             border: "1px solid #ccc",
                                             borderRadius: 1,
                                             padding: 1,
-                                            backgroundColor: post
-                                                ? post.status === "posted"
-                                                    ? "#c8e6c9"
-                                                    : "#e0e0e0"
-                                                : "#f5f5f5",
+                                            backgroundColor: isToday
+                                                ? "#561f5b" 
+                                                : post
+                                                    ? post.status === "pending"
+                                                        ? "#c8e6c9"
+                                                        : "#e0e0e0"
+                                                    : "white",
+                                                    color: isToday ? "white" : "black",
                                             height: "100%",
                                             display: "flex",
                                             flexDirection: "column",
@@ -204,7 +193,7 @@ const HistoryPage = () => {
                                             "&:hover": {
                                                 backgroundColor: post
                                                     ? post.status === "posted"
-                                                        ? "#c8e6c9"
+                                                        ? "white"
                                                         : "#c8e6c9"
                                                     : "#e0e0e0",
                                             },
@@ -220,7 +209,6 @@ const HistoryPage = () => {
                         })}
                     </Grid>
 
-                    {/* Popup for Post Details */}
                     <Popover
                         open={Boolean(anchorEl)}
                         anchorEl={anchorEl}
@@ -235,7 +223,6 @@ const HistoryPage = () => {
                         }}
                     >
                         <Box sx={{ p: 2, width: isSmallScreen ? "80vw" : 300, position: "relative" }}>
-                            {/* Close Icon */}
                             <IconButton
                                 sx={{ position: "absolute", top: 8, right: 8 }}
                                 onClick={handleClosePopup}
@@ -243,7 +230,6 @@ const HistoryPage = () => {
                                 <CloseIcon />
                             </IconButton>
 
-                            {/* Post Details */}
                             <Typography variant="h6" sx={{ mb: 2 }}>
                                 {selectedPost?.title}
                             </Typography>
@@ -276,6 +262,12 @@ const HistoryPage = () => {
                                             <Checkbox
                                                 checked={selectedPlatforms.includes(platform)}
                                                 onChange={handlePlatformChange(platform)}
+                                                sx={{
+                                                    color: "#561f5b",
+                                                    "&.Mui-checked": {
+                                                        color: "#561f5b",
+                                                    },
+                                                }}
                                                 disabled={selectedPost?.status === "posted"}
                                             />
                                         }
