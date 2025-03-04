@@ -15,6 +15,8 @@ import ThankYouPage from './components/ThankyouPage/thankyouPage';
 import SetupSchedulePage from './components/Post- Schedules/schedules';
 import ProfilePage from './components/profile/profile';
 import HistoryPage from './components/History/history';
+import Templates from './components/Templates';
+import Test from './components/Test'
 
 function App() {
   return (

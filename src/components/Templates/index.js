@@ -1,4 +1,4 @@
-import { Box, Button, Menu,MenuItem, Stack, Typography } from '@mui/material';
+import { Box, Button, Menu,MenuItem, Stack, Typography,Card,CardContent,TextField } from '@mui/material';
 import React,{useState} from 'react'
 import Header from '../Header';
 import XIcon from '@mui/icons-material/X';
@@ -9,6 +9,9 @@ import SellIcon from '@mui/icons-material/Sell';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+
 
 
 
@@ -28,13 +31,7 @@ const names = [
 ];
 
 
-function getStyles(name, personName,) {
-    return {
-      fontWeight: personName.includes(name)
-        ? Typography.fontWeightMedium
-        : Typography.fontWeightRegular,
-    };
-  }
+
 
   const smartTags = ["{post_title}","{post_id}","{post_category}","{post_author_name}","{post_terms}"];
 
@@ -44,17 +41,45 @@ function getStyles(name, personName,) {
 const Templates=()=>{
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [personName, setPersonName] = React.useState([]);
+    const [preview, setPreview] = useState("");    
     const [templateContent, setTemplateContent] = useState("{post_title}");
     
     const open = Boolean(anchorEl);
+
+    function getStyles(name, personName,) {
+        return {
+          fontWeight: personName.includes(name)
+            ? Typography.fontWeightMedium
+            : Typography.fontWeightRegular,
+        };
+      }
+
+      const generatePreview = () => {
+        const exampleData = {
+          "{post_title}": "",
+          "{post_id}": "",
+          "{post_category}": "",
+          "{post_author_name}":"",
+          "{post_terms}":""
+        };
+    
+        // "{date}": new Date().toLocaleDateString(),
+    
+    
+        let previewContent = templateContent;
+        Object.keys(exampleData).forEach((key) => {
+          previewContent = previewContent.replaceAll(key, exampleData[key]);
+        });
+    
+        setPreview(previewContent);
+      };
 
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
 
     const handleClose = (e) => {
-    //   setAnchorEl(null);
-    console.log(e.target)
+      setAnchorEl(null);
     };
 
     const handleChange = (event) => {
@@ -69,13 +94,16 @@ const Templates=()=>{
      // Insert Smart Tag into the editor
   const insertSmartTag = (tag) => {
     setTemplateContent((prev) => prev + " " + tag);
+    // generatePreview()
+    handleClose()
+
   };
 
     
 
     return(
         <container>
-            <Header/>
+            {/* <Header/> */}
             <container >
                 <Stack direction='row' spacing={2} mt={2}sx={{padding:'20px'}}>
                     <Box flex={1} sx={{border:'1px solid blue',}}>
@@ -118,9 +146,20 @@ const Templates=()=>{
                                 <MenuItem onClick={handleClose}>Post Terms</MenuItem> */}
                             </Menu>
                             <Box mt={2}>
-                                <textarea cols={90} rows={5} style={{borderRadius:'12px',padding:'10px'}}>
+                                 {/* <ReactQuill 
+                                        value={templateContent} 
+                                        onChange={setTemplateContent} 
+                                        
+                                      /> */}
+                                       <TextField
+                                            id="filled-multiline-static"
+                                           
+                                            multiline
+                                            rows={4}
+                                            value={templateContent}
+                                            onChange={setTemplateContent}
+                                            />
                                 
-                                </textarea>
                             </Box>
                             <Stack spacing={2} direction="row" justifyContent='space-between' alignItems="center" sx={{border:'1px solid blue',mr:2,ml:2,p:2}}>
                                 <Box sx={{textAlign:'start'}}>
@@ -166,7 +205,16 @@ const Templates=()=>{
                         </Box>
                     </Box>
                     <Box flex={1} sx={{border:'1px solid red'}}>
-                        Preview section
+                        {/* Preview section */}
+                        {preview && (
+                                <Card sx={{ mt: 3, p: 2, backgroundColor: "#f5f5f5" }}>
+                                <CardContent>
+                                    <Typography variant="h6">Preview:</Typography>
+                                    <Typography dangerouslySetInnerHTML={{ __html: preview }} />
+                                    {/* <Typography>{templateContent}</Typography> */}
+                                </CardContent>
+                                </Card>
+                            )}
                     </Box>
 
                 </Stack>

@@ -217,7 +217,7 @@ const SetupSchedulePage = () => {
                                 </FormControl> */}
 
                                 {/* Sleep Timer */}
-                                <Box sx={{ mb: 0,"& .MuiOutlinedInput-root": {
+                                {/* <Box sx={{ mb: 0,"& .MuiOutlinedInput-root": {
                                             "&.Mui-focused fieldset": {
                                                 borderColor: "#561f5b",
                                             },
@@ -258,10 +258,10 @@ const SetupSchedulePage = () => {
                                             />
                                         </Grid>
                                     </Grid>
-                                </Box>
+                                </Box> */}
 
                                 {/* Sleep Days */}
-                                {/* <Box sx={{ mb: 2 }}>
+                                <Box sx={{ mb: 2 }}>
                                     <Typography variant="h6" sx={{ mb: 2 }}>
                                         Set Sleep Days
                                     </Typography>
@@ -304,7 +304,7 @@ const SetupSchedulePage = () => {
                                             </MenuItem>
                                         ))}
                                     </Menu>
-                                </Box> */}
+                                </Box>
 
                                 {/* Buttons */}
                                 <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2,mt:2, }}>

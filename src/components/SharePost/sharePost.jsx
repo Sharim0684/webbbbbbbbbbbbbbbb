@@ -205,7 +205,7 @@ const SharePostPage = () => {
 
                         <Stack direction={{ xs: "column", md: "row" }} spacing={10}>
 
-                            <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3 }}>
+                            <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3, }}>
                                 <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
                                     Select Platforms
                                 </Typography>
@@ -213,7 +213,7 @@ const SharePostPage = () => {
                                     <Button
                                         variant="contained"
                                         onClick={() => setShowCheckboxes(true)}
-                                        sx={{ marginLeft: 20, mt: 3, backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45", } }}
+                                        sx={{marginLeft: 5, mt: 3, backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45", } }}
                                     >
                                         Select
                                     </Button>
@@ -228,7 +228,7 @@ const SharePostPage = () => {
                                         </Button>
                                     </Stack>
                                 )}
-                                <FormGroup sx={{ marginTop: 3, gap: 2 }}>
+                                <FormGroup sx={{ marginTop: 3, gap: 2,border:'' }}>
                                     {platforms.map(({ name, icon, color }) => (
                                         <Stack key={name} direction="row" alignItems="center" spacing={2}>
                                             {showCheckboxes && (
@@ -247,16 +247,18 @@ const SharePostPage = () => {
                                                     display: "flex",
                                                     alignItems: "center",
                                                     justifyContent: "flex-start",
-                                                    backgroundColor: selectedPlatforms.includes(name) ? "#561f5b" : "transparent",
-                                                    color: selectedPlatforms.includes(name) ? "white" : "#561f5b",
-                                                    "&:hover": { backgroundColor: "#420f45", color: "white" },
+                                                    // backgroundColor: selectedPlatforms.includes(name) ? "#561f5b" : "transparent",
+                                                    color: selectedPlatforms.includes(name) ? "#561f5b" : "561f5b",
+                                                    "&:hover": { backgroundColor: "#561f5b", color: "white" },
                                                     textTransform: "none",
                                                     width: "50%",
                                                 }}
                                             >
-                                                <Stack direction="row" alignItems="center" spacing={1}>
-                                                    <Box sx={{ color, fontSize: 24 }}>{icon}</Box> {/* Increased icon size */}
-                                                    <span style={{ fontSize: 18 }}>{name}</span> {/* Increased text size */}
+                                                <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3} sx={{}}>
+                                                    {/* <Box sx={{ color, fontSize: 24, mr:'4' }}>{icon}</Box> Increased icon size */}
+                                                    {/* <span style={{ fontSize: 18 }}>{name}</span> Increased text size */}
+                                                    {icon}
+                                                    <Typography variant="h6" sx={{}}>{name}</Typography>
                                                 </Stack>
                                             </Button>
                                         </Stack>
@@ -361,7 +363,7 @@ const SharePostPage = () => {
                     </Box>
 
 
-                    <Modal open={previewOpen} onClose={handleClosePreview}>
+                    <Modal open={previewOpen} >
                         <Box
                             sx={{
                                 position: "absolute",
@@ -373,7 +375,7 @@ const SharePostPage = () => {
                                 maxHeight: "80vh",
                                 bgcolor: "background.paper",
                                 boxShadow: 24,
-                                p: 2,
+                                p: 5,
                                 borderRadius: 2,
                                 overflowY: "auto",
                             }}
@@ -385,15 +387,14 @@ const SharePostPage = () => {
                                 <Close />
                             </IconButton>
 
-                            <Typography variant="h5" sx={{ mb: 2 }}>
-                                {postTitle}
-                            </Typography>
-
-
-                            <Box sx={{ mb: 2 }}>
+                            <Box>
+                                <Typography variant="h5" sx={{ mb: 2,color:'#561f5b' }}>
+                                    {postTitle}
+                                </Typography>
+                                <Box sx={{ mb: 2,fontSize:'18px',fontWeight:"500",fontFamily:'Poppins',color:'#424242', }}>
                                 <div dangerouslySetInnerHTML={{ __html: postContent }} />
-                            </Box>
-
+                                </Box>
+                            </Box>                   
 
                             {(uploadedFile || postContent.includes("http")) && <Divider sx={{ my: 2 }} />}
 
