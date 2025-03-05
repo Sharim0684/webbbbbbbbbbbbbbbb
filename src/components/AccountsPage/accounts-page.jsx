@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Button,
   InputBase,
@@ -31,14 +31,14 @@ const socialPlatforms = [
 const AccountsPage = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
 
- 
+  // Handle platform selection
   const handleSelect = (platform) => {
     setSelectedPlatforms((prev) =>
       prev.includes(platform) ? prev.filter((p) => p !== platform) : [...prev, platform]
     );
   };
 
-  
+  // Handle platform deletion
   const deleteItem = (name) => {
     const filteredList = selectedPlatforms.filter(
       (platform) => name !== platform.name
@@ -48,12 +48,15 @@ const AccountsPage = () => {
 
   return (
     <Box>
-            <Box sx={{ width: "100%",   }}>
-                <Header />
-            </Box>
-      <Container maxWidth="xl" sx={{ marginTop: "10px" }}>
+      {/* Header */}
+      <Box sx={{ width: "100%" }}>
+        <Header />
+      </Box>
+
+      {/* Main Content */}
+      <Container maxWidth="xl" sx={{ marginTop: "10px", padding: { xs: 2, md: 3 } }}>
         <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-          
+          {/* Connected Platforms Section */}
           <Box
             sx={{
               flex: 1,
@@ -64,11 +67,11 @@ const AccountsPage = () => {
           >
             <Typography
               variant="h4"
-              sx={{ fontFamily: "poppins", color: "#561f5b", mt: 12 }}
+              sx={{ fontFamily: "poppins", color: "#561f5b", mt: { xs: 4, md: 12 } }}
             >
               Connected Platforms
             </Typography>
-            <Stack spacing={2} mt={8} mr={2}>
+            <Stack spacing={2} mt={{ xs: 4, md: 8 }} mr={2}>
               {selectedPlatforms.map((platform) => (
                 <SidebarListItem
                   key={platform.name}
@@ -79,9 +82,9 @@ const AccountsPage = () => {
             </Stack>
           </Box>
 
-         
+          {/* Search and Social Platforms Section */}
           <Box sx={{ flex: 2, textAlign: "start" }}>
-            
+            {/* Search Bar */}
             <Paper
               component="form"
               sx={{
@@ -120,12 +123,11 @@ const AccountsPage = () => {
                 "&:hover": { border: "2px solid #561f5b" },
               }}
             >
-              <AddIcon sx={{ fontSize: 30, marginRight: "10px" }} /> Connect
-              Accounts
+              <AddIcon sx={{ fontSize: 30, marginRight: "10px" }} /> Connect Accounts
             </Button>
 
             {/* Social Platforms Grid */}
-            <Stack direction="row" spacing={4} sx={{ pl: 5, mt: 5 }}>
+            <Box sx={{ mt: 5, pl: { xs: 0, md: 5 } }}>
               <Grid container spacing={2}>
                 {socialPlatforms.map((platform) => (
                   <Grid item key={platform.name} xs={12} sm={6} md={4} lg={3}>
@@ -149,7 +151,7 @@ const AccountsPage = () => {
                   </Grid>
                 ))}
               </Grid>
-            </Stack>
+            </Box>
           </Box>
         </Stack>
       </Container>
