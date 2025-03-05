@@ -181,11 +181,7 @@ const SharePostPage = () => {
         console.log(turnOffLikes)
         // navigate("/thankYouPage");
     };
-<<<<<<< HEAD
     
-=======
-
->>>>>>> b8fa5db63e62a0c4052f62a74b2a70816bbe8595
     const handleSetupSchedule = () => {
         let newErrors = { title: "", content: "", platform: "" };
 
@@ -257,7 +253,6 @@ const SharePostPage = () => {
                             backgroundColor: "white",
                         }}
                     >
-<<<<<<< HEAD
                         <Stack direction={{ xs: "column", md: "row" }} spacing={10}>
                             <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3 }}>
                                 <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
@@ -364,13 +359,6 @@ const SharePostPage = () => {
                                         {errors.platform}
                                     </Typography>
                                 )} */}
-=======
-                        <Stack direction="column" spacing={3}>
-                            <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
-                                Select Platforms
-                            </Typography>
-                            {!showCheckboxes && (
->>>>>>> b8fa5db63e62a0c4052f62a74b2a70816bbe8595
                                 <Button
                                     variant="contained"
                                     onClick={() => setShowCheckboxes(true)}
@@ -378,7 +366,6 @@ const SharePostPage = () => {
                                 >
                                     Select
                                 </Button>
-<<<<<<< HEAD
                                 {errors.platform && (
                                     <Typography color="error" sx={{ mt: "0px",mb:'0px',fontSize:"14px" }}>
                                         {errors.platform}
@@ -451,121 +438,6 @@ const SharePostPage = () => {
 
                                 </Stack >
                             </Stack>
-=======
-                            )}
-                            {showCheckboxes && (
-                                <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
-                                    <Button variant="contained" onClick={handleSelectAll} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
-                                        {selectAll ? "Unselect" : "All"}
-                                    </Button>
-                                    <Button variant="contained" color="secondary" onClick={handleCancel} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
-                                        Cancel
-                                    </Button>
-                                </Stack>
-                            )}
-                            <FormGroup sx={{ marginTop: 3, gap: 2 }}>
-                                {platforms.map(({ name, icon }) => (
-                                    <Stack key={name} direction="row" alignItems="center" spacing={2}>
-                                        {showCheckboxes && (
-                                            <Checkbox
-                                                checked={selectedPlatforms.includes(name)}
-                                                onChange={() => handleCheckboxClick(name)}
-                                                sx={{
-                                                    color: "#561f5b",
-                                                    "&.Mui-checked": { color: "#561f5b" }
-                                                }}
-                                            />
-                                        )}
-                                        <Button
-                                            onClick={() => handlePlatformClick(name)}
-                                            sx={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "flex-start",
-                                                color: selectedPlatforms.includes(name) ? "#561f5b" : "561f5b",
-                                                "&:hover": { backgroundColor: "#561f5b", color: "white" },
-                                                textTransform: "none",
-                                                width: "100%",
-                                            }}
-                                        >
-                                            <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
-                                                {icon}
-                                                <Typography variant="h6">{name}</Typography>
-                                            </Stack>
-                                        </Button>
-                                    </Stack>
-                                ))}
-                            </FormGroup>
-                        </Stack>
-                    </Box>
-                    <Box
-                        sx={{
-                            width: { xs: "100%", md: "60%" },
-                            padding: { xs: 2, md: 5 },
-                            mt: { xs: 3, md: 0 },
-                        }}
-                    >
-                        <Stack spacing={2}>
-                            <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left", fontSize: { xs: "1.5rem", md: "2rem" } }}>
-                                Create Post
-                            </Typography>
-                            <TextField
-                                label="Post Title"
-                                variant="outlined"
-                                value={postTitle}
-                                onChange={handleTitleChange}
-                                error={!!errors.title}
-                                sx={{
-                                    "& .MuiOutlinedInput-root": {
-                                        "&.Mui-focused fieldset": {
-                                            borderColor: "#561f5b"
-                                        }
-                                    },
-                                    "& .MuiInputLabel-root.Mui-focused": {
-                                        color: "#561f5b"
-                                    }
-                                }}
-                            />
-                            {errors.title && (
-                                <Typography color="error" sx={{ mt: 1 }}>
-                                    {errors.title}
-                                </Typography>
-                            )}
-                            <Typography variant="h6" sx={{ color: "#561f5b", textAlign: "left" }}>
-                                Post Content
-                            </Typography>
-                            <CustomQuill>
-                                <ReactQuill
-                                    ref={quillRef}
-                                    value={postContent}
-                                    onChange={handlePostChange}
-                                    style={{ height: "200px" }}
-                                    modules={modules}
-                                />
-                            </CustomQuill>
-                            {errors.content && (
-                                <Typography color="error" sx={{ mt: 1 }}>
-                                    {errors.content}
-                                </Typography>
-                            )}
-                            {errors.platform && (
-                                <Typography color="error" sx={{ mt: 1 }}>
-                                    {errors.platform}
-                                </Typography>
-                            )}
-                            <Button
-                                variant="contained"
-                                component="label"
-                                sx={{
-                                    backgroundColor: "#561f5b",
-                                    color: "white",
-                                    "&:hover": { backgroundColor: "#420f45" },
-                                }}
-                            >
-                                Upload Media
-                                <input type="file" hidden onChange={handleFileUpload} />
-                            </Button>
->>>>>>> b8fa5db63e62a0c4052f62a74b2a70816bbe8595
                         </Stack>
                         {/* <Stack direction="row" spacing={2} justifyContent="center" sx={{ marginTop: 2,border:'1px solid blue' }}>
                             <FormControlLabel
@@ -602,13 +474,8 @@ const SharePostPage = () => {
                                 }
                                 label={turnOffComments ? "Turn on comments" : "Turn off comments"}
                             />
-<<<<<<< HEAD
-                        </Stack> */}
-                        {/* <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: -5,border:'1px solid red' }}>
-=======
                         </Stack>
                         <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: 2 }}>
->>>>>>> b8fa5db63e62a0c4052f62a74b2a70816bbe8595
                             <Button
                                 variant="contained"
                                 onClick={handlePublish}
