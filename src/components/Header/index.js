@@ -15,7 +15,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import BrandLogo from '../Assets/Innovators-Tech-Black 1.svg';
 
-const pages = ['Accounts',  'Share Now', ];
+const pages = ['Accounts', 'Share Now'];
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -40,16 +40,25 @@ function Header() {
   };
 
   return (
-    <AppBar position="static" sx={{ bgcolor: 'white', width: '100%' }}>
-  <Container maxWidth={false} sx={{ padding: '0 16px' }}>
-
+    <AppBar
+      position="static"
+      sx={{
+        bgcolor: 'white',
+        width: '100%',
+        boxShadow: 'none',
+        borderBottom: '2px solid #561f5b', // Add bottom border here
+      }}
+    >
+      <Container maxWidth={false} sx={{ padding: { xs: '0 16px', md: '0 24px' } }}>
         <Toolbar disableGutters>
+          {/* Brand Logo */}
           <Link to="/" style={{ textDecoration: 'none' }}>
-            <Box sx={{ width: '200px', cursor: 'pointer' }}>
+            <Box sx={{ width: { xs: '150px', md: '200px' }, cursor: 'pointer' }}>
               <img src={BrandLogo} alt="Brand Logo" style={{ height: "50px" }} className="mb-3" />
             </Box>
           </Link>
 
+          {/* Mobile Menu */}
           {isMobile ? (
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
@@ -80,11 +89,10 @@ function Header() {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                 {pages.map((page) => {
+                {pages.map((page) => {
                   const route =
                     page === 'Accounts'
                       ? '/add-accounts'
-                     
                       : page === 'Share Now'
                       ? '/sharePost'
                       : '/';
@@ -110,25 +118,38 @@ function Header() {
               </Menu>
             </Box>
           ) : (
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-              <Link style={{ textDecoration: 'none' }} to="/add-accounts">
-                <Typography variant="hr" sx={{ mr: 3, color: '#561f5b', fontFamily: 'poppins', fontWeight: '600', fontSize: '16px' }}>
-                  Accounts
-                </Typography>
-              </Link>
-              <Link style={{ textDecoration: 'none' }} to="/sharePost">
-                <Typography variant="hr" sx={{ mr: 3, color: '#561f5b', fontFamily: 'poppins', fontWeight: '600', fontSize: '16px' }}>
-                  Share Now
-                </Typography>
-              </Link>
-              {/* <Link style={{ textDecoration: 'none' }} to="/schedulePage">
-                <Typography variant="hr" sx={{ mr: 3, color: '#561f5b', fontFamily: 'poppins', fontWeight: '600', fontSize: '16px' }}>
-                  Post Schedules
-                </Typography>
-              </Link> */}
+            // Desktop Menu
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {pages.map((page) => {
+                const route =
+                  page === 'Accounts'
+                    ? '/add-accounts'
+                    : page === 'Share Now'
+                    ? '/sharePost'
+                    : '/';
+
+                return (
+                  <Link key={page} to={route} style={{ textDecoration: 'none' }}>
+                    <Typography
+                      variant="hr"
+                      sx={{
+                        mr: 3,
+                        color: '#561f5b',
+                        fontFamily: 'poppins',
+                        fontWeight: '600',
+                        fontSize: '16px',
+                        '&:hover': { color: '#420f45' },
+                      }}
+                    >
+                      {page}
+                    </Typography>
+                  </Link>
+                );
+              })}
             </Box>
           )}
 
+          {/* User Avatar and Menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -152,14 +173,14 @@ function Header() {
               onClose={handleCloseUserMenu}
             >
               <Link style={{ textDecoration: 'none' }} to="/profile">
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Profile</Typography>
-              </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Profile</Typography>
+                </MenuItem>
               </Link>
               <Link style={{ textDecoration: 'none' }} to="/history">
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Resend Post </Typography>
-              </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Resend Post</Typography>
+                </MenuItem>
               </Link>
               <Link style={{ textDecoration: 'none' }} to="/login">
                 <MenuItem onClick={handleCloseUserMenu}>
