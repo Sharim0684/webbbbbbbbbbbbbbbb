@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,  } from "react";
 import {
     Stack,
     Typography,
@@ -65,9 +65,12 @@ const SharePostPage = () => {
     const quillRef = useRef(null);
     const navigate = useNavigate();
 
+
+   
+
     const handlePlatformClick = (platform) => {
         setSelectedPlatforms([platform]);
-        setError("");
+        setError((prev)=>({...prev,content:''}));
     };
 
     const handleCheckboxClick = (platform) => {
@@ -111,6 +114,7 @@ const SharePostPage = () => {
             setErrors((prev) => ({ ...prev, content: "Please select a platform." }));
             return;
         }
+       
 
         const characterLimit = selectedPlatforms.length > 1
             ? 270
@@ -168,9 +172,15 @@ const SharePostPage = () => {
     };
 
     const handlePost = () => {
-        navigate("/thankYouPage");
+    const contentPost=postContent.replaceAll(/<[^>]+>/g,"")
+        console.log(postTitle)
+        console.log(contentPost)
+        console.log(uploadedFile.name)
+        console.log(selectedPlatforms)
+        console.log(turnOffComments)
+        console.log(turnOffLikes)
+        // navigate("/thankYouPage");
     };
-
     
     const handleSetupSchedule = () => {
         let newErrors = { title: "", content: "", platform: "" };
@@ -194,7 +204,7 @@ const SharePostPage = () => {
         setScheduleError("");
         setScheduleDate(date);
         setScheduleTime(time);
-        console.log("Post scheduled for:", date, time);
+        // console.log("Post scheduled for:", date, time);
         navigate("/history");
     };
 
@@ -318,7 +328,7 @@ const SharePostPage = () => {
                                     }}
                                 />
                                 {errors.title && (
-                                    <Typography color="error" sx={{ mt: 1 }}>
+                                    <Typography color="error" sx={{ mt: 0,mb:0,fontSize:"14px" }}>
                                         {errors.title}
                                     </Typography>
                                 )}
@@ -335,15 +345,15 @@ const SharePostPage = () => {
                                     />
                                 </CustomQuill>
                                 {errors.content && (
-                                    <Typography color="error" sx={{ mt: 1 }}>
+                                    <Typography color="error" sx={{ fontSize:"14px",mt: 0 }}>
                                         {errors.content}
                                     </Typography>
                                 )}
-                                {errors.platform && (
-                                    <Typography color="error" sx={{ mt: 1 }}>
+                                {/* {errors.platform && (
+                                    <Typography color="error" sx={{ mt: 0 }}>
                                         {errors.platform}
                                     </Typography>
-                                )}
+                                )} */}
                                 <Button
                                     variant="contained"
                                     component="label"
@@ -356,9 +366,80 @@ const SharePostPage = () => {
                                     Upload Media
                                     <input type="file" hidden onChange={handleFileUpload} />
                                 </Button>
+                                {errors.platform && (
+                                    <Typography color="error" sx={{ mt: "0px",mb:'0px',fontSize:"14px" }}>
+                                        {errors.platform}
+                                    </Typography>
+                                )}
+                                {/* toggle buttons sec */}
+                                <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center" >
+                                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ marginTop: 2,border:'' }}>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    sx={{
+                                                        "& .MuiSwitch-switchBase.Mui-checked": {
+                                                            color: "#561f5b",
+                                                        },
+                                                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                                            backgroundColor: "#561f5b",
+                                                        },
+                                                    }}
+                                                    checked={turnOffLikes}
+                                                    onChange={likesSwitch}
+                                                />
+                                            }
+                                            label={turnOffLikes ? "Turn on likes" : "Turn off likes"}
+                                             />
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    sx={{
+                                                        "& .MuiSwitch-switchBase.Mui-checked": {
+                                                            color: "#561f5b",
+                                                        },
+                                                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                                            backgroundColor: "#561f5b",
+                                                        },
+                                                    }}
+                                                    checked={turnOffComments}
+                                                    onChange={commentsSwitch}
+                                                />
+                                            }
+                                            label={turnOffComments ? "Turn on comments" : "Turn off comments"}
+                                        />
+                                    </Stack>
+                                    <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: -5, }}>
+                                        <Button
+                                                variant="contained"
+                                                onClick={handlePublish}
+                                                color="primary"
+                                                sx={{
+                                                    backgroundColor: "#561f5b",
+                                                    color: "white",
+                                                    "&:hover": { backgroundColor: "#420f45" },
+                                                }}
+                                            >
+                                                Publish Now
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={handleSetupSchedule}
+                                            sx={{
+                                                backgroundColor: "#561f5b",
+                                                color: "white",
+                                                "&:hover": { backgroundColor: "#420f45" },
+                                            }}
+                                        >
+                                            Setup Schedule
+                                        </Button>
+                                    </Stack>
+
+                                </Stack >
                             </Stack>
                         </Stack>
-                        <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
+                        {/* <Stack direction="row" spacing={2} justifyContent="center" sx={{ marginTop: 2,border:'1px solid blue' }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -393,8 +474,8 @@ const SharePostPage = () => {
                                 }
                                 label={turnOffComments ? "Turn on comments" : "Turn off comments"}
                             />
-                        </Stack>
-                        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: -5 }}>
+                        </Stack> */}
+                        {/* <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: -5,border:'1px solid red' }}>
                             <Button
                                 variant="contained"
                                 onClick={handlePublish}
@@ -419,7 +500,7 @@ const SharePostPage = () => {
                             >
                                 Setup Schedule
                             </Button>
-                        </Stack>
+                        </Stack> */}
                     </Box>
 
                     <Modal open={previewOpen} onClose={handleClosePreview}>

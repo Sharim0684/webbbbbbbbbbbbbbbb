@@ -35,12 +35,13 @@ function App() {
           <Route exact path='/profile' Component={ProfilePage} />
           <Route exact path='/history' Component={HistoryPage} />
           {/* <Route exact path='/schedulePage' Component={SetupSchedulePage} /> */}
-          <Route exact path='/autoPost' Component={AutoPostSettings} />
+          {/* <Route exact path='/autoPost' Component={AutoPostSettings} /> */}
         </Routes>
-      </BrowserRouter>
+       </BrowserRouter>
       {/* <Header/> */}
       {/* <DashBoard/> */}
       {/* <AccountsPage/> */}
+      {/* <Templates/> */}
 
     </div>
   );

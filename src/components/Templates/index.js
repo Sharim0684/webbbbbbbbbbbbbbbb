@@ -9,10 +9,7 @@ import SellIcon from '@mui/icons-material/Sell';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-
-
+import Preview from './Preview';
 
 
 const ITEM_HEIGHT = 48;
@@ -26,22 +23,22 @@ const MenuProps = {
   },
 };
 
-const names = [
+const options = [
   'Only Custom message','Link Card','Featured Image'
 ];
 
 
 
 
-  const smartTags = ["{post_title}","{post_id}","{post_category}","{post_author_name}","{post_terms}"];
+  const smartTags = ["post_title","post_id","post_category","post_author_name","post_terms"];
 
 
 
 
 const Templates=()=>{
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [personName, setPersonName] = React.useState([]);
-    const [preview, setPreview] = useState("");    
+    const [option, setOption] = React.useState(options[1]);
+    const [preview, setPreview] = useState("true");    
     const [templateContent, setTemplateContent] = useState("{post_title}");
     
     const open = Boolean(anchorEl);
@@ -83,21 +80,25 @@ const Templates=()=>{
     };
 
     const handleChange = (event) => {
-        const {
-          target: { value },
-        } = event;
-        setPersonName(
-          // On autofill we get a stringified value.
-          typeof value === 'string' ? value.split(',') : value,
-        );
-      };
-     // Insert Smart Tag into the editor
-  const insertSmartTag = (tag) => {
-    setTemplateContent((prev) => prev + " " + tag);
-    // generatePreview()
-    handleClose()
+        console.log(event.target.value)
+        setOption(event.target.value)
+    //     const {
+    //       target: { value },
+    //     } = event;
+    //     setOption(
+    //       // On autofill we get a stringified value.
+    //       typeof value === 'string' ? value.split(',') : value,
+    //     );
+    //   
+    }
 
-  };
+     // Insert Smart Tag into the editor
+    const insertSmartTag = (tag) => {
+        setTemplateContent((prev) => prev + " " + tag);
+        // generatePreview()
+        handleClose()
+
+    };
 
     
 
@@ -138,62 +139,43 @@ const Templates=()=>{
                                     {smartTags.map((tag)=>(
                                 <MenuItem onClick={()=>insertSmartTag(tag)} >{tag}</MenuItem>
                             ))}
-                                {/* <MenuItem sx={{fontSize:'16px'}} onClick={handleClose}>Post ID</MenuItem> */}
-                                {/* <MenuItem onClick={handleClose}>Post Title</MenuItem>
-                                <MenuItem onClick={handleClose}>Post Category</MenuItem>
-                                <MenuItem onClick={handleClose}>Post Author Name</MenuItem>
-                                <MenuItem onClick={handleClose}>Post Tags</MenuItem>
-                                <MenuItem onClick={handleClose}>Post Terms</MenuItem> */}
                             </Menu>
-                            <Box mt={2}>
-                                 {/* <ReactQuill 
-                                        value={templateContent} 
-                                        onChange={setTemplateContent} 
-                                        
-                                      /> */}
+                            <Box mt={2}>                                
                                        <TextField
-                                            id="filled-multiline-static"
-                                           
+                                            id="filled-multiline-static"                                           
                                             multiline
                                             rows={4}
+                                            
+                                            sx={{width:'95%',}}
                                             value={templateContent}
-                                            onChange={setTemplateContent}
-                                            />
-                                
+                                            onChange={(e)=>setTemplateContent(e.target.value)}
+                                            />                                
                             </Box>
-                            <Stack spacing={2} direction="row" justifyContent='space-between' alignItems="center" sx={{border:'1px solid blue',mr:2,ml:2,p:2}}>
+                            <Stack spacing={2} direction="row" justifyContent='space-between' alignItems="center" sx={{border:'',mr:2,ml:2,p:2}}>
                                 <Box sx={{textAlign:'start'}}>
                                     <Typography variant='h6' sx={{color:'#561f5b',fontFamily:'poppins',fontWeight:'500'}} >Posting Type</Typography>
                                     <Typography variant='h7' sx={{fontFamily:'poppins',color:'grey'}} >Post styling and Type setup.</Typography>
                                 </Box>
                                 <Box>
                                 <FormControl sx={{width: 150, }}>
-                                        <Select
-                                        multiple
+                                        <Select                                        
                                         displayEmpty
-                                        value={personName}
+                                        value={option}
                                         onChange={handleChange}
                                         input={<OutlinedInput />}
-                                        renderValue={(selected) => {
-                                            if (selected.length === 0) {
-                                            return <em></em>;
-                                            }
-
-                                            return selected.join(', ');
-                                        }}
-                                        MenuProps={MenuProps}
+                                        
                                         inputProps={{ 'aria-label': 'Without label' }}
                                         >
                                         {/* <MenuItem disabled value="">
                                             <em>Placeholder</em>
                                         </MenuItem> */}
-                                        {names.map((name) => (
+                                        {options.map((eachOption) => (
                                             <MenuItem
-                                            key={name}
-                                            value={name}
-                                            style={getStyles(name, personName,)}
+                                            key={eachOption}
+                                            value={eachOption}
+                                            
                                             >
-                                            {name}
+                                            {eachOption}
                                             </MenuItem>
                                         ))}
                                         </Select>
@@ -206,14 +188,15 @@ const Templates=()=>{
                     </Box>
                     <Box flex={1} sx={{border:'1px solid red'}}>
                         {/* Preview section */}
-                        {preview && (
-                                <Card sx={{ mt: 3, p: 2, backgroundColor: "#f5f5f5" }}>
-                                <CardContent>
-                                    <Typography variant="h6">Preview:</Typography>
-                                    <Typography dangerouslySetInnerHTML={{ __html: preview }} />
-                                    {/* <Typography>{templateContent}</Typography> */}
-                                </CardContent>
-                                </Card>
+                        {preview && (<Preview option={option}/>
+                                // <Card sx={{ mt: 3, p: 2, backgroundColor: "#f5f5f5" }}>
+                                // <CardContent>
+                                //     <Typography variant="h6">Preview:</Typography>
+                                //     {/* <Typography dangerouslySetInnerHTML={{ __html: preview }} /> */}
+                                //     {/* <Typography>{templateContent}</Typography> */}
+                                //     {/* <Typography>{templateContent}</Typography> */}
+                                // </CardContent>
+                                // </Card>
                             )}
                     </Box>
 
