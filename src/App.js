@@ -2,7 +2,7 @@ import {BrowserRouter,Route,Routes} from 'react-router-dom'
 import LoginForm from './components/LoginForm';
 import PasswordRecovery from './components/PasswordRecovery';
 import SignUpForm from './components/SignUpForm';
-import VerificationPage from './components/VerificationPage';
+import VerificationPage from './components/VerificationPage/verification';
 import SetNewPassword from './components/SetNewPassword';
 
 import './App.css';
