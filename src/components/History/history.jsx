@@ -142,7 +142,7 @@ const HistoryPage = () => {
             >
                 <Box sx={{ width: isSmallScreen ? "100%" : "50%", height: "auto", backgroundColor: "white", borderRadius: 0, boxShadow: 0 }}>
                     <Typography variant="h4" sx={{ color: "#561f5b", mb: 4, textAlign: "center" }}>
-                        Resend Post 
+                        Recent Posts 
                     </Typography>
 
                     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mb: 4 }}>

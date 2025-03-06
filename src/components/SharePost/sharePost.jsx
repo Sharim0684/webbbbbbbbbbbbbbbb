@@ -24,7 +24,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-
+ 
 const CustomQuill = styled("div")({
     "& .ql-editor": {
         minHeight: "150px",
@@ -33,22 +33,22 @@ const CustomQuill = styled("div")({
         borderColor: "#561f5b !important",
     },
 });
-
+ 
 const platforms = [
     { name: "Facebook", icon: <FacebookIcon color='primary' /> },
     { name: "Twitter", icon: <XIcon color="primary" sx={{ fontSize: '20px' }} /> },
     { name: "Instagram", icon: <InstagramIcon color="primary" /> },
     { name: "LinkedIn", icon: <LinkedInIcon color="primary" /> },
 ];
-
+ 
 const SharePostPage = () => {
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
     const [postContent, setPostContent] = useState("");
     const [postTitle, setPostTitle] = useState("");
-    const [turnOffLikes, setTurnOffLikes] = useState(false);
-    const [turnOffComments, setTurnOffComments] = useState(false);
+    const [enableLikes, setEnableLikes] = useState(false);
+    const [enableComments, setEnableComments] = useState(false);
     const [scheduleError, setScheduleError] = useState("");
     const [errors, setErrors] = useState({
         title: "",
@@ -61,15 +61,15 @@ const SharePostPage = () => {
     const [scheduleOpen, setScheduleOpen] = useState(false);
     const [scheduleDate, setScheduleDate] = useState("");
     const [scheduleTime, setScheduleTime] = useState("");
-    const [reminderEnabled, setReminderEnabled] = useState(false);
+    const [enableReminder, setEnableReminder] = useState(false);
     const quillRef = useRef(null);
     const navigate = useNavigate();
-
+ 
     const handlePlatformClick = (platform) => {
         setSelectedPlatforms([platform]);
         setError("");
     };
-
+ 
     const handleCheckboxClick = (platform) => {
         setSelectedPlatforms((prevSelected) => {
             const newSelected = prevSelected.includes(platform)
@@ -79,7 +79,7 @@ const SharePostPage = () => {
         });
         setError("");
     };
-
+ 
     const handleSelectAll = () => {
         if (selectAll) {
             setSelectedPlatforms([]);
@@ -89,57 +89,58 @@ const SharePostPage = () => {
         setSelectAll(!selectAll);
         setError("");
     };
-
+ 
     const handleCancel = () => {
         setSelectedPlatforms([]);
         setShowCheckboxes(false);
         setSelectAll(false);
     };
-
+ 
     const likesSwitch = (event) => {
-        setTurnOffLikes(event.target.checked);
+        setEnableLikes(event.target.checked);
     };
-
+ 
     const commentsSwitch = (event) => {
-        setTurnOffComments(event.target.checked);
+        setEnableComments(event.target.checked);
     };
-
+ 
     const handlePostChange = (content) => {
+        const textPost=content.replaceAll()
         setPostContent(content);
-
+ 
         if (selectedPlatforms.length === 0) {
             setErrors((prev) => ({ ...prev, content: "Please select a platform." }));
             return;
         }
-
+ 
         const characterLimit = selectedPlatforms.length > 1
             ? 270
             : platforms.find(p => p.name === selectedPlatforms[0])?.limit || 270;
-
+ 
         if (content.length > characterLimit) {
             setErrors((prev) => ({ ...prev, content: `Character limit exceeded! Max allowed: ${characterLimit} characters.` }));
         } else {
             setErrors((prev) => ({ ...prev, content: "" }));
         }
     };
-
+ 
     const handleTitleChange = (event) => {
         setPostTitle(event.target.value);
         setErrors((prev) => ({ ...prev, title: event.target.value.trim() ? "" : "Enter Post Title" }));
     };
-
+ 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
+ 
         setUploadedFile(file);
         const fileUrl = URL.createObjectURL(file);
         const editor = quillRef.current.getEditor();
-
+ 
         editor.focus();
-
+ 
         const range = editor.getSelection() || { index: editor.getLength(), length: 0 };
-
+ 
         if (file.type.startsWith("image/")) {
             editor.insertEmbed(range.index, "image", fileUrl);
         } else if (file.type.startsWith("video/")) {
@@ -148,65 +149,94 @@ const SharePostPage = () => {
             editor.insertText(range.index, `[File: ${file.name}](${fileUrl})`);
         }
     };
-
+ 
     const handlePublish = () => {
         let newErrors = { title: "", content: "", platform: "" };
-
+ 
         if (!postTitle.trim()) newErrors.title = "Enter Post Title";
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
-
+ 
         setErrors(newErrors);
-
+ 
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setPreviewOpen(true);
         }
     };
-
+ 
     const handleEdit = () => {
         setPreviewOpen(false);
     };
-
+ 
     const handlePost = () => {
-        navigate("/thankYouPage");
+        const postText=postContent.replaceAll(/<[^>]+>/g, "");
+        const userUploadedFile= uploadedFile ? uploadedFile.name:''
+        const userPostDetails={
+            postTitle,
+            postText,
+            userUploadedFile,
+            enableLikes,
+            enableComments,
+            selectedPlatforms
+        }
+        console.log(userPostDetails)
+        // navigate("/thankYouPage");
     };
-
+ 
     const handleSetupSchedule = () => {
         let newErrors = { title: "", content: "", platform: "" };
-
+ 
         if (!postTitle.trim()) newErrors.title = "Enter Post Title";
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
-
+ 
         setErrors(newErrors);
-
+ 
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setScheduleOpen(true);
         }
     };
-
+ 
     const handleSchedule = (date, time) => {
         if (!date || !time) {
             setScheduleError("Please select both date and time.");
             return;
         }
-
+ 
         setScheduleError("");
         setScheduleDate(date);
         setScheduleTime(time);
         console.log("Post scheduled for:", date, time);
-        navigate("/history");
-    };
+        const postText=postContent.replaceAll(/<[^>]+>/g, "");
+        const userUploadedFile= uploadedFile ? uploadedFile.name:''
+        const userScheduleDetails={
+            dateOfSchedule:date,
+            timeOfSchedule:time,
+            reminderEnabled:enableReminder,
+            userPostDetails:{
+                postTitle,
+                postText,
+                userUploadedFile,
+                enableLikes,
+                enableComments,
+                selectedPlatforms
+            }
+        }
+        
 
+        console.log(userScheduleDetails)
+        // navigate("/history");
+    };
+ 
     const handleReminderToggle = (enabled) => {
-        setReminderEnabled(enabled);
+        setEnableReminder(enabled);
         console.log("Reminder enabled:", enabled);
     };
-
+ 
     const handleClosePreview = () => {
         setPreviewOpen(false);
     };
-
+ 
     const modules = {
         toolbar: [
             [{ header: [1, 2, false] }],
@@ -215,14 +245,14 @@ const SharePostPage = () => {
             ["link"],
         ],
     };
-
+ 
     return (
         <Box>
       {/* Header */}
       <Box sx={{ width: "100%" }}>
         <Header />
       </Box>
-
+ 
             <Container maxWidth="xl" sx={{ border: "", marginTop: 5 }}>
                 <Box
                     sx={{
@@ -380,11 +410,11 @@ const SharePostPage = () => {
                                                 backgroundColor: "#561f5b",
                                             },
                                         }}
-                                        checked={turnOffLikes}
+                                        checked={enableLikes}
                                         onChange={likesSwitch}
                                     />
                                 }
-                                label={turnOffLikes ? "Turn on likes" : "Turn off likes"}
+                                label={enableLikes ? "Disable likes" : "Enable likes"}
                             />
                             <FormControlLabel
                                 control={
@@ -397,11 +427,11 @@ const SharePostPage = () => {
                                                 backgroundColor: "#561f5b",
                                             },
                                         }}
-                                        checked={turnOffComments}
+                                        checked={enableComments}
                                         onChange={commentsSwitch}
                                     />
                                 }
-                                label={turnOffComments ? "Turn on comments" : "Turn off comments"}
+                                label={enableComments ? "Disable comments" : "Enable comments"}
                             />
                         </Stack>
                         <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: 2 }}>
@@ -532,7 +562,7 @@ const SharePostPage = () => {
                     </Box>
                 </Box>
             </Modal>
-
+ 
             <Modal open={scheduleOpen} onClose={() => setScheduleOpen(false)}>
                 <Box
                     sx={{
@@ -576,7 +606,7 @@ const SharePostPage = () => {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={reminderEnabled}
+                                checked={enableReminder}
                                 onChange={(e) => handleReminderToggle(e.target.checked)}
                                 sx={{
                                     "& .MuiSwitch-switchBase.Mui-checked": {
@@ -588,7 +618,7 @@ const SharePostPage = () => {
                                 }}
                             />
                         }
-                        label="Set Reminder"
+                        label={enableReminder ? "Disable reminder": "Enable reminder"}
                     />
                     <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
                         <Button
@@ -620,5 +650,6 @@ const SharePostPage = () => {
         // dqafkjwbnjkfnk
     );
 };
-
+ 
 export default SharePostPage;
+ 
