@@ -1,4 +1,4 @@
-import React, { useState, useRef,  } from "react";
+import React, { useState, useRef } from "react";
 import {
     Stack,
     Typography,
@@ -24,7 +24,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-
+ 
 const CustomQuill = styled("div")({
     "& .ql-editor": {
         minHeight: "150px",
@@ -33,22 +33,22 @@ const CustomQuill = styled("div")({
         borderColor: "#561f5b !important",
     },
 });
-
+ 
 const platforms = [
     { name: "Facebook", icon: <FacebookIcon color='primary' /> },
     { name: "Twitter", icon: <XIcon color="primary" sx={{ fontSize: '20px' }} /> },
     { name: "Instagram", icon: <InstagramIcon color="primary" /> },
     { name: "LinkedIn", icon: <LinkedInIcon color="primary" /> },
 ];
-
+ 
 const SharePostPage = () => {
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
     const [postContent, setPostContent] = useState("");
     const [postTitle, setPostTitle] = useState("");
-    const [turnOffLikes, setTurnOffLikes] = useState(false);
-    const [turnOffComments, setTurnOffComments] = useState(false);
+    const [enableLikes, setEnableLikes] = useState(false);
+    const [enableComments, setEnableComments] = useState(false);
     const [scheduleError, setScheduleError] = useState("");
     const [errors, setErrors] = useState({
         title: "",
@@ -61,18 +61,15 @@ const SharePostPage = () => {
     const [scheduleOpen, setScheduleOpen] = useState(false);
     const [scheduleDate, setScheduleDate] = useState("");
     const [scheduleTime, setScheduleTime] = useState("");
-    const [reminderEnabled, setReminderEnabled] = useState(false);
+    const [enableReminder, setEnableReminder] = useState(false);
     const quillRef = useRef(null);
     const navigate = useNavigate();
-
-
-   
-
+ 
     const handlePlatformClick = (platform) => {
         setSelectedPlatforms([platform]);
-        setError((prev)=>({...prev,content:''}));
+        setError("");
     };
-
+ 
     const handleCheckboxClick = (platform) => {
         setSelectedPlatforms((prevSelected) => {
             const newSelected = prevSelected.includes(platform)
@@ -82,7 +79,7 @@ const SharePostPage = () => {
         });
         setError("");
     };
-
+ 
     const handleSelectAll = () => {
         if (selectAll) {
             setSelectedPlatforms([]);
@@ -92,58 +89,57 @@ const SharePostPage = () => {
         setSelectAll(!selectAll);
         setError("");
     };
-
+ 
     const handleCancel = () => {
         setSelectedPlatforms([]);
         setShowCheckboxes(false);
         setSelectAll(false);
     };
-
+ 
     const likesSwitch = (event) => {
-        setTurnOffLikes(event.target.checked);
+        setEnableLikes(event.target.checked);
     };
-
+ 
     const commentsSwitch = (event) => {
-        setTurnOffComments(event.target.checked);
+        setEnableComments(event.target.checked);
     };
-
+ 
     const handlePostChange = (content) => {
         setPostContent(content);
-
+ 
         if (selectedPlatforms.length === 0) {
             setErrors((prev) => ({ ...prev, content: "Please select a platform." }));
             return;
         }
-       
-
+ 
         const characterLimit = selectedPlatforms.length > 1
             ? 270
             : platforms.find(p => p.name === selectedPlatforms[0])?.limit || 270;
-
+ 
         if (content.length > characterLimit) {
             setErrors((prev) => ({ ...prev, content: `Character limit exceeded! Max allowed: ${characterLimit} characters.` }));
         } else {
             setErrors((prev) => ({ ...prev, content: "" }));
         }
     };
-
+ 
     const handleTitleChange = (event) => {
         setPostTitle(event.target.value);
         setErrors((prev) => ({ ...prev, title: event.target.value.trim() ? "" : "Enter Post Title" }));
     };
-
+ 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
+ 
         setUploadedFile(file);
         const fileUrl = URL.createObjectURL(file);
         const editor = quillRef.current.getEditor();
-
+ 
         editor.focus();
-
+ 
         const range = editor.getSelection() || { index: editor.getLength(), length: 0 };
-
+ 
         if (file.type.startsWith("image/")) {
             editor.insertEmbed(range.index, "image", fileUrl);
         } else if (file.type.startsWith("video/")) {
@@ -152,72 +148,82 @@ const SharePostPage = () => {
             editor.insertText(range.index, `[File: ${file.name}](${fileUrl})`);
         }
     };
-
+ 
     const handlePublish = () => {
         let newErrors = { title: "", content: "", platform: "" };
-
+ 
         if (!postTitle.trim()) newErrors.title = "Enter Post Title";
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
-
+ 
         setErrors(newErrors);
-
+ 
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setPreviewOpen(true);
         }
     };
-
+ 
     const handleEdit = () => {
         setPreviewOpen(false);
     };
-
+ 
     const handlePost = () => {
-    const contentPost=postContent.replaceAll(/<[^>]+>/g,"")
-        console.log(postTitle)
-        console.log(contentPost)
-        console.log(uploadedFile.name)
-        console.log(selectedPlatforms)
-        console.log(turnOffComments)
-        console.log(turnOffLikes)
+        const postText=postContent.replaceAll(/<[^>]+>/g, "");
+        const userUploadedFile= uploadedFile ? uploadedFile.name:''
+        const userPostDetails={
+            postTitle,
+            postText,
+            userUploadedFile,
+            enableLikes,
+            enableComments,
+            selectedPlatforms
+        }
+        console.log(userPostDetails)
         // navigate("/thankYouPage");
     };
-    
+ 
     const handleSetupSchedule = () => {
         let newErrors = { title: "", content: "", platform: "" };
-
+ 
         if (!postTitle.trim()) newErrors.title = "Enter Post Title";
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
-
+ 
         setErrors(newErrors);
-
+ 
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setScheduleOpen(true);
         }
     };
-
+ 
     const handleSchedule = (date, time) => {
         if (!date || !time) {
             setScheduleError("Please select both date and time.");
             return;
         }
-
+ 
         setScheduleError("");
         setScheduleDate(date);
         setScheduleTime(time);
-        // console.log("Post scheduled for:", date, time);
-        navigate("/history");
+        console.log("Post scheduled for:", date, time);
+        const userScheduleDetails={
+            dateOfSchedule:date,
+            timeOfSchedule:time,
+            reminderEnabled:enableReminder,
+        }
+        console.log(userScheduleDetails)
+        // navigate("/history");
     };
-
+ 
     const handleReminderToggle = (enabled) => {
-        setReminderEnabled(enabled);
+        setEnableReminder(enabled);
         console.log("Reminder enabled:", enabled);
     };
-
+ 
     const handleClosePreview = () => {
         setPreviewOpen(false);
     };
-
+ 
     const modules = {
         toolbar: [
             [{ header: [1, 2, false] }],
@@ -226,14 +232,14 @@ const SharePostPage = () => {
             ["link"],
         ],
     };
-
+ 
     return (
         <Box>
       {/* Header */}
       <Box sx={{ width: "100%" }}>
         <Header />
       </Box>
-
+ 
             <Container maxWidth="xl" sx={{ border: "", marginTop: 5 }}>
                 <Box
                     sx={{
@@ -253,112 +259,11 @@ const SharePostPage = () => {
                             backgroundColor: "white",
                         }}
                     >
-                        <Stack direction={{ xs: "column", md: "row" }} spacing={10}>
-                            <Box sx={{ width: { xs: "100%", md: "40%" }, gap: 2, mt: 3 }}>
-                                <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
-                                    Select Platforms
-                                </Typography>
-                                {!showCheckboxes && (
-                                    <Button
-                                        variant="contained"
-                                        onClick={() => setShowCheckboxes(true)}
-                                        sx={{ marginLeft: 5, mt: 3, backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}
-                                    >
-                                        Select
-                                    </Button>
-                                )}
-                                {showCheckboxes && (
-                                    <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
-                                        <Button variant="contained" onClick={handleSelectAll} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
-                                            {selectAll ? "Unselect" : "All"}
-                                        </Button>
-                                        <Button variant="contained" color="secondary" onClick={handleCancel} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
-                                            Cancel
-                                        </Button>
-                                    </Stack>
-                                )}
-                                <FormGroup sx={{ marginTop: 3, gap: 2, border: '' }}>
-                                    {platforms.map(({ name, icon }) => (
-                                        <Stack key={name} direction="row" alignItems="center" spacing={2}>
-                                            {showCheckboxes && (
-                                                <Checkbox
-                                                    checked={selectedPlatforms.includes(name)}
-                                                    onChange={() => handleCheckboxClick(name)}
-                                                    sx={{
-                                                        color: "#561f5b",
-                                                        "&.Mui-checked": { color: "#561f5b" }
-                                                    }}
-                                                />
-                                            )}
-                                            <Button
-                                                onClick={() => handlePlatformClick(name)}
-                                                sx={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "flex-start",
-                                                    color: selectedPlatforms.includes(name) ? "#561f5b" : "561f5b",
-                                                    "&:hover": { backgroundColor: "#561f5b", color: "white" },
-                                                    textTransform: "none",
-                                                    width: "50%",
-                                                }}
-                                            >
-                                                <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
-                                                    {icon}
-                                                    <Typography variant="h6">{name}</Typography>
-                                                </Stack>
-                                            </Button>
-                                        </Stack>
-                                    ))}
-                                </FormGroup>
-                            </Box>
-                            <Stack spacing={2} sx={{ width: { xs: "100%", md: "70%" } }}>
-                                <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left", fontSize: { xs: "1.5rem", md: "2rem" } }}>
-                                    Create Post
-                                </Typography>
-                                <TextField
-                                    label="Post Title"
-                                    variant="outlined"
-                                    value={postTitle}
-                                    onChange={handleTitleChange}
-                                    error={!!errors.title}
-                                    sx={{
-                                        "& .MuiOutlinedInput-root": {
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "#561f5b"
-                                            }
-                                        },
-                                        "& .MuiInputLabel-root.Mui-focused": {
-                                            color: "#561f5b"
-                                        }
-                                    }}
-                                />
-                                {errors.title && (
-                                    <Typography color="error" sx={{ mt: 0,mb:0,fontSize:"14px" }}>
-                                        {errors.title}
-                                    </Typography>
-                                )}
-                                <Typography variant="h6" sx={{ color: "#561f5b", textAlign: "left" }}>
-                                    Post Content
-                                </Typography>
-                                <CustomQuill>
-                                    <ReactQuill
-                                        ref={quillRef}
-                                        value={postContent}
-                                        onChange={handlePostChange}
-                                        style={{ height: "200px" }}
-                                        modules={modules}
-                                    />
-                                </CustomQuill>
-                                {errors.content && (
-                                    <Typography color="error" sx={{ fontSize:"14px",mt: 0 }}>
-                                        {errors.content}
-                                    </Typography>
-                                )}
-                                {/* {errors.platform && (
-                                    <Typography color="error" sx={{ mt: 0 }}>
-                                        {errors.platform}
-                                    </Typography>
-                                )} */}
+                        <Stack direction="column" spacing={3}>
+                            <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
+                                Select Platforms
+                            </Typography>
+                            {!showCheckboxes && (
                                 <Button
                                     variant="contained"
                                     onClick={() => setShowCheckboxes(true)}
@@ -366,80 +271,121 @@ const SharePostPage = () => {
                                 >
                                     Select
                                 </Button>
-                                {errors.platform && (
-                                    <Typography color="error" sx={{ mt: "0px",mb:'0px',fontSize:"14px" }}>
-                                        {errors.platform}
-                                    </Typography>
-                                )}
-                                {/* toggle buttons sec */}
-                                <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center" >
-                                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ marginTop: 2,border:'' }}>
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    sx={{
-                                                        "& .MuiSwitch-switchBase.Mui-checked": {
-                                                            color: "#561f5b",
-                                                        },
-                                                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                                                            backgroundColor: "#561f5b",
-                                                        },
-                                                    }}
-                                                    checked={turnOffLikes}
-                                                    onChange={likesSwitch}
-                                                />
-                                            }
-                                            label={turnOffLikes ? "Turn on likes" : "Turn off likes"}
-                                             />
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    sx={{
-                                                        "& .MuiSwitch-switchBase.Mui-checked": {
-                                                            color: "#561f5b",
-                                                        },
-                                                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                                                            backgroundColor: "#561f5b",
-                                                        },
-                                                    }}
-                                                    checked={turnOffComments}
-                                                    onChange={commentsSwitch}
-                                                />
-                                            }
-                                            label={turnOffComments ? "Turn on comments" : "Turn off comments"}
-                                        />
-                                    </Stack>
-                                    <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: -5, }}>
-                                        <Button
-                                                variant="contained"
-                                                onClick={handlePublish}
-                                                color="primary"
+                            )}
+                            {showCheckboxes && (
+                                <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
+                                    <Button variant="contained" onClick={handleSelectAll} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
+                                        {selectAll ? "Unselect" : "All"}
+                                    </Button>
+                                    <Button variant="contained" color="secondary" onClick={handleCancel} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
+                                        Cancel
+                                    </Button>
+                                </Stack>
+                            )}
+                            <FormGroup sx={{ marginTop: 3, gap: 2 }}>
+                                {platforms.map(({ name, icon }) => (
+                                    <Stack key={name} direction="row" alignItems="center" spacing={2}>
+                                        {showCheckboxes && (
+                                            <Checkbox
+                                                checked={selectedPlatforms.includes(name)}
+                                                onChange={() => handleCheckboxClick(name)}
                                                 sx={{
-                                                    backgroundColor: "#561f5b",
-                                                    color: "white",
-                                                    "&:hover": { backgroundColor: "#420f45" },
+                                                    color: "#561f5b",
+                                                    "&.Mui-checked": { color: "#561f5b" }
                                                 }}
-                                            >
-                                                Publish Now
-                                        </Button>
+                                            />
+                                        )}
                                         <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            onClick={handleSetupSchedule}
+                                            onClick={() => handlePlatformClick(name)}
                                             sx={{
-                                                backgroundColor: "#561f5b",
-                                                color: "white",
-                                                "&:hover": { backgroundColor: "#420f45" },
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "flex-start",
+                                                color: selectedPlatforms.includes(name) ? "#561f5b" : "561f5b",
+                                                "&:hover": { backgroundColor: "#561f5b", color: "white" },
+                                                textTransform: "none",
+                                                width: "100%",
                                             }}
                                         >
-                                            Setup Schedule
+                                            <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
+                                                {icon}
+                                                <Typography variant="h6">{name}</Typography>
+                                            </Stack>
                                         </Button>
                                     </Stack>
-
-                                </Stack >
-                            </Stack>
+                                ))}
+                            </FormGroup>
                         </Stack>
-                        {/* <Stack direction="row" spacing={2} justifyContent="center" sx={{ marginTop: 2,border:'1px solid blue' }}>
+                    </Box>
+                    <Box
+                        sx={{
+                            width: { xs: "100%", md: "60%" },
+                            padding: { xs: 2, md: 5 },
+                            mt: { xs: 3, md: 0 },
+                        }}
+                    >
+                        <Stack spacing={2}>
+                            <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left", fontSize: { xs: "1.5rem", md: "2rem" } }}>
+                                Create Post
+                            </Typography>
+                            <TextField
+                                label="Post Title"
+                                variant="outlined"
+                                value={postTitle}
+                                onChange={handleTitleChange}
+                                error={!!errors.title}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        "&.Mui-focused fieldset": {
+                                            borderColor: "#561f5b"
+                                        }
+                                    },
+                                    "& .MuiInputLabel-root.Mui-focused": {
+                                        color: "#561f5b"
+                                    }
+                                }}
+                            />
+                            {errors.title && (
+                                <Typography color="error" sx={{ mt: 1 }}>
+                                    {errors.title}
+                                </Typography>
+                            )}
+                            <Typography variant="h6" sx={{ color: "#561f5b", textAlign: "left" }}>
+                                Post Content
+                            </Typography>
+                            <CustomQuill>
+                                <ReactQuill
+                                    ref={quillRef}
+                                    value={postContent}
+                                    onChange={handlePostChange}
+                                    style={{ height: "200px" }}
+                                    modules={modules}
+                                />
+                            </CustomQuill>
+                            {errors.content && (
+                                <Typography color="error" sx={{ mt: 1 }}>
+                                    {errors.content}
+                                </Typography>
+                            )}
+                            {errors.platform && (
+                                <Typography color="error" sx={{ mt: 1 }}>
+                                    {errors.platform}
+                                </Typography>
+                            )}
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{
+                                    backgroundColor: "#561f5b",
+                                    color: "white",
+                                    "&:hover": { backgroundColor: "#420f45" },
+                                }}
+                            >
+                                Upload Media
+                                <input type="file" hidden onChange={handleFileUpload} />
+                            </Button>
+                        </Stack>
+                        <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -451,11 +397,11 @@ const SharePostPage = () => {
                                                 backgroundColor: "#561f5b",
                                             },
                                         }}
-                                        checked={turnOffLikes}
+                                        checked={enableLikes}
                                         onChange={likesSwitch}
                                     />
                                 }
-                                label={turnOffLikes ? "Turn on likes" : "Turn off likes"}
+                                label={enableLikes ? "Disable likes" : "Enable likes"}
                             />
                             <FormControlLabel
                                 control={
@@ -468,11 +414,11 @@ const SharePostPage = () => {
                                                 backgroundColor: "#561f5b",
                                             },
                                         }}
-                                        checked={turnOffComments}
+                                        checked={enableComments}
                                         onChange={commentsSwitch}
                                     />
                                 }
-                                label={turnOffComments ? "Turn on comments" : "Turn off comments"}
+                                label={enableComments ? "Disable comments" : "Enable comments"}
                             />
                         </Stack>
                         <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: 2 }}>
@@ -500,7 +446,7 @@ const SharePostPage = () => {
                             >
                                 Setup Schedule
                             </Button>
-                        </Stack> */}
+                        </Stack>
                     </Box>
                 </Box>
             </Container>
@@ -603,7 +549,7 @@ const SharePostPage = () => {
                     </Box>
                 </Box>
             </Modal>
-
+ 
             <Modal open={scheduleOpen} onClose={() => setScheduleOpen(false)}>
                 <Box
                     sx={{
@@ -647,7 +593,7 @@ const SharePostPage = () => {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={reminderEnabled}
+                                checked={enableReminder}
                                 onChange={(e) => handleReminderToggle(e.target.checked)}
                                 sx={{
                                     "& .MuiSwitch-switchBase.Mui-checked": {
@@ -659,7 +605,7 @@ const SharePostPage = () => {
                                 }}
                             />
                         }
-                        label="Set Reminder"
+                        label={enableReminder ? "Disable reminder": "Enable reminder"}
                     />
                     <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
                         <Button
@@ -688,7 +634,9 @@ const SharePostPage = () => {
                 </Box>
             </Modal>
         </Box>
+        // dqafkjwbnjkfnk
     );
 };
-
+ 
 export default SharePostPage;
+ 

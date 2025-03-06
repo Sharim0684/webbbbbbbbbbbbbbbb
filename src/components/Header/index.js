@@ -45,8 +45,7 @@ function Header() {
       sx={{
         bgcolor: 'white',
         width: '100%',
-        boxShadow: 'none',
-        borderBottom: '2px solid #561f5b', // Add bottom border here
+        boxShadow: '',
       }}
     >
       <Container maxWidth={false} sx={{ padding: { xs: '0 16px', md: '0 24px' } }}>
@@ -179,7 +178,7 @@ function Header() {
               </Link>
               <Link style={{ textDecoration: 'none' }} to="/history">
                 <MenuItem onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Resend Post</Typography>
+                  <Typography sx={{ textAlign: 'center', color: '#561f5b' }}>Resent Post</Typography>
                 </MenuItem>
               </Link>
               <Link style={{ textDecoration: 'none' }} to="/login">
