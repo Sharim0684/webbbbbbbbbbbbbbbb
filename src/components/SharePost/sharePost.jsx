@@ -105,6 +105,7 @@ const SharePostPage = () => {
     };
  
     const handlePostChange = (content) => {
+        const textPost=content.replaceAll()
         setPostContent(content);
  
         if (selectedPlatforms.length === 0) {
@@ -206,11 +207,23 @@ const SharePostPage = () => {
         setScheduleDate(date);
         setScheduleTime(time);
         console.log("Post scheduled for:", date, time);
+        const postText=postContent.replaceAll(/<[^>]+>/g, "");
+        const userUploadedFile= uploadedFile ? uploadedFile.name:''
         const userScheduleDetails={
             dateOfSchedule:date,
             timeOfSchedule:time,
             reminderEnabled:enableReminder,
+            userPostDetails:{
+                postTitle,
+                postText,
+                userUploadedFile,
+                enableLikes,
+                enableComments,
+                selectedPlatforms
+            }
         }
+        
+
         console.log(userScheduleDetails)
         // navigate("/history");
     };
