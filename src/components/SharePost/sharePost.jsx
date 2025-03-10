@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     Stack,
     Typography,
@@ -24,6 +24,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie'
  
 const CustomQuill = styled("div")({
     "& .ql-editor": {
@@ -34,14 +35,15 @@ const CustomQuill = styled("div")({
     },
 });
  
-const platforms = [
-    { name: "Facebook", icon: <FacebookIcon color='primary' /> },
-    { name: "Twitter", icon: <XIcon color="primary" sx={{ fontSize: '20px' }} /> },
-    { name: "Instagram", icon: <InstagramIcon color="primary" /> },
-    { name: "LinkedIn", icon: <LinkedInIcon color="primary" /> },
-];
+// const platforms = [
+//     { name: "Facebook", icon: <FacebookIcon color='primary' /> },
+//     { name: "Twitter", icon: <XIcon color="primary" sx={{ fontSize: '20px' }} /> },
+//     { name: "Instagram", icon: <InstagramIcon color="primary" /> },
+//     { name: "LinkedIn", icon: <LinkedInIcon color="primary" /> },
+// ];
  
 const SharePostPage = () => {
+    const [userPlatforms,setUserPlatforms]=useState([])
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
@@ -64,6 +66,12 @@ const SharePostPage = () => {
     const [enableReminder, setEnableReminder] = useState(false);
     const quillRef = useRef(null);
     const navigate = useNavigate();
+
+
+    useEffect(()=>{
+        const platforms=JSON.parse(Cookies.get('userPlatforms'))
+        setUserPlatforms(platforms)
+    },[])
  
     const handlePlatformClick = (platform) => {
         setSelectedPlatforms([platform]);
@@ -84,7 +92,7 @@ const SharePostPage = () => {
         if (selectAll) {
             setSelectedPlatforms([]);
         } else {
-            setSelectedPlatforms(platforms.map((p) => p.name));
+            setSelectedPlatforms(userPlatforms.map((p) => p.name));
         }
         setSelectAll(!selectAll);
         setError("");
@@ -105,7 +113,8 @@ const SharePostPage = () => {
     };
  
     const handlePostChange = (content) => {
-        const textPost=content.replaceAll()
+        // const textPost=content.replaceAll(/<[^>]+>/g,"")
+        // console.log(textPost)
         setPostContent(content);
  
         if (selectedPlatforms.length === 0) {
@@ -115,7 +124,7 @@ const SharePostPage = () => {
  
         const characterLimit = selectedPlatforms.length > 1
             ? 270
-            : platforms.find(p => p.name === selectedPlatforms[0])?.limit || 270;
+            : userPlatforms.find(p => p.name === selectedPlatforms[0])?.limit || 270;
  
         if (content.length > characterLimit) {
             setErrors((prev) => ({ ...prev, content: `Character limit exceeded! Max allowed: ${characterLimit} characters.` }));
@@ -206,7 +215,7 @@ const SharePostPage = () => {
         setScheduleError("");
         setScheduleDate(date);
         setScheduleTime(time);
-        console.log("Post scheduled for:", date, time);
+        // console.log("Post scheduled for:", date, time);
         const postText=postContent.replaceAll(/<[^>]+>/g, "");
         const userUploadedFile= uploadedFile ? uploadedFile.name:''
         const userScheduleDetails={
@@ -230,7 +239,7 @@ const SharePostPage = () => {
  
     const handleReminderToggle = (enabled) => {
         setEnableReminder(enabled);
-        console.log("Reminder enabled:", enabled);
+        // console.log("Reminder enabled:", enabled);
     };
  
     const handleClosePreview = () => {
@@ -296,7 +305,7 @@ const SharePostPage = () => {
                                 </Stack>
                             )}
                             <FormGroup sx={{ marginTop: 3, gap: 2 }}>
-                                {platforms.map(({ name, icon }) => (
+                                {userPlatforms.map(({ name, logo }) => (
                                     <Stack key={name} direction="row" alignItems="center" spacing={2}>
                                         {showCheckboxes && (
                                             <Checkbox
@@ -321,7 +330,7 @@ const SharePostPage = () => {
                                             }}
                                         >
                                             <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
-                                                {icon}
+                                                <img src={logo} alt="Logo" style={{height:'30px',width:'30px',borderRadius:'12px'}} />
                                                 <Typography variant="h6">{name}</Typography>
                                             </Stack>
                                         </Button>
@@ -523,10 +532,11 @@ const SharePostPage = () => {
                             <Typography variant="h6">Selected Platforms:</Typography>
                             <Stack direction="row" spacing={1}>
                                 {selectedPlatforms.map((platform) => {
-                                    const platformData = platforms.find((p) => p.name === platform);
+                                    const platformData = userPlatforms.find((p) => p.name === platform);
                                     return (
                                         <Box key={platform} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                            <Box sx={{ color: platformData.color }}>{platformData.icon}</Box>
+                                            {/* <Box sx={{ color: platformData.color }}>{platformData.icon}</Box> */}
+                                            <img src={platformData.logo} alt="Logo" style={{height:"30px",width:'30px',borderRadius:'12px'}}/>
                                             <Typography>{platformData.name}</Typography>
                                         </Box>
                                     );

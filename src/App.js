@@ -9,19 +9,20 @@ import './App.css';
 
 import DashBoard from './components/DashBoard';
 import AccountsPage from './components/AccountsPage/accounts-page';
-import AutoPostSettings from './components/AutoPost/aotoPost';
+// import AutoPostSettings from './components/AutoPost/aotoPost';
 import SharePostPage from './components/SharePost/sharePost';
 import ThankYouPage from './components/ThankyouPage/thankyouPage';
 // import SetupSchedulePage from './components/Post- Schedules/schedules';
 import ProfilePage from './components/profile/profile';
 import HistoryPage from './components/History/history';
-import Templates from './components/Templates';
 
 
 function App() {
+  
   return (
     <div className="App">
       <BrowserRouter>
+      
         <Routes>
           <Route exact path="/login" Component={LoginForm} />
           <Route exact path="/" Component={DashBoard} />
@@ -38,10 +39,7 @@ function App() {
           {/* <Route exact path='/autoPost' Component={AutoPostSettings} /> */}
         </Routes>
        </BrowserRouter>
-      {/* <Header/> */}
-      {/* <DashBoard/> */}
-      {/* <AccountsPage/> */}
-      {/* <Templates/> */}
+     
 
     </div>
   );

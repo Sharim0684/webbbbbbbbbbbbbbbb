@@ -92,7 +92,7 @@ const VerificationPage = () => {
                 <img src={BrandImg} alt="KHKR-InnovatorsTech" style={{ height: 70, width: 200 }} />
             </LogoSection>
 
-            <ImageSection>
+            <ImageSection sx={{display:{xs:'none',md:'block'}}}>
                 <img src={BrandLogo} alt="KHKR-InnovatorsTech" style={{ height: 300, }} />
             </ImageSection>
 
@@ -128,7 +128,7 @@ const VerificationPage = () => {
                         variant="contained"
                         sx={{ mt: 2, backgroundColor: '#561f5b', width: 230, borderRadius: 2 }}
                         type="submit"
-                        disabled={otp.length !== 4}
+                        // disabled={otp.length !== 4}
                     >
                         <Link to={otp.length === 4 ? "/set-new-paswd" : "#"} style={{ textDecoration: 'none', color: 'white' }}>Continue</Link>
                     </Button>

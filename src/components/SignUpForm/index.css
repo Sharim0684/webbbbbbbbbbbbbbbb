@@ -43,7 +43,7 @@
 }
 .webapp-signup-pg-form-container{
     padding: 10px;
-    width: 25%;
+    width: 30%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -53,8 +53,12 @@
     padding-top: 0px;
 }
 .webapp-signup-pg-form{
-    width: 100%;
-    
+    /* width: 100%; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
 }
 
 .webapp-signup-pg-signup-btn{
@@ -84,7 +88,7 @@
     margin-left: 10px;
 }
 .webapp-signup-pg-input-filed-container{
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -157,9 +161,9 @@
     border: none;
     outline: 1px solid #561f5b;
     color: #561f5b;
-    margin-left: 40px;
+    margin-left: 10px;
     padding-left: 20px;
-    width: 98%;
+    width: 88%;
     flex: none;
 }
 
@@ -216,4 +220,29 @@
 .option{
     font-family: Poppins;
     font-size: 14px;
+}
+@media (max-width:768px){
+    .webapp-signup-pg-brand-logo-container{
+        display: none;
+    }
+   
+    .webapp-signup-pg-form-container{
+        width: 75%;
+       
+    }
+    .PhoneInput{
+        width: 80%;
+    }
+    .PhoneInputInput{
+        width: 100%;
+    }
+}
+@media (max-width:450px){
+    .PhoneInput{
+        width: 80%;
+    }
+    .PhoneInputInput{
+        width: 80%;
+    }
+
 }

@@ -152,3 +152,15 @@
     font-family: Poppins;
     font-size: 14px;
 }
+@media(min-width:768px){
+   
+
+}
+
+@media (max-width:768px){
+    .webapp-login-pg-brand-logo-section{
+        display: none;
+    }
+   
+
+}
