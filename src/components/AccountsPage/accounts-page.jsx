@@ -69,27 +69,29 @@ const AccountsPage = () => {
     // const targetURL = `http://localhost:8000/api/facebook-login/ ? redirect=${encodeURIComponent(currentURL)}`;
     // window.location.href = targetURL; 
 
-    let loginUrl='';
-    if(platform.name==='Facebook'){
-      loginUrl="http://localhost:8000/api/facebook-login/"
-    }
-    else if(platform.name==="LinkedIn"){
-      loginUrl=''
-    }
-    else if(platform.name==='Instagram'){
-      loginUrl=''
-    }
-    else if(platform.name==='Snapchat'){
-      loginUrl=''
-    }   
+    // let loginUrl='';
+    // if(platform.name==='Facebook'){
+    //   loginUrl="http://localhost:8000/api/facebook-login/"
+    // }
+    // else if(platform.name==="LinkedIn"){
+    //   loginUrl=''
+    // }
+    // else if(platform.name==='Instagram'){
+    //   loginUrl=''
+    // }
+    // else if(platform.name==='Snapchat'){
+    //   loginUrl=''
+    // }   
 
   // with appId provide //////
 
-  // const appId="9296047703797645"
-  // const redirectUrl=window.location.origin
+   const appId="9296047703797645"
+   const redirectUrl=window.location.origin
   // const loginUrl = `https://www.facebook.com/v17.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(
   //   redirectUrl
   // )}&response_type=token`;
+
+ const loginUrl= "http://127.0.0.1:8000/facebook-login"
 
     const width = 600;
     const height = 600;
@@ -101,10 +103,7 @@ const AccountsPage = () => {
       "LoginPopup",
       `height=${height},width=${width},top=${top},left=${left}`
     );
-    setSelectedPlatforms((prev) =>
-      prev.includes(platform) ? [...prev]  : [...prev, platform],
-      // Cookies.set('userPlatforms', JSON.stringify(selectedPlatforms),{expires:30})
-    );
+   
 
     const checkPopupClosed = setInterval(() => {
       if (popup?.closed) {
@@ -113,6 +112,11 @@ const AccountsPage = () => {
         checkLoginStatus()
       }
     }, 1000);
+
+    setSelectedPlatforms((prev) =>
+      prev.includes(platform) ? [...prev]  : [...prev, platform],
+      Cookies.set('userPlatforms', JSON.stringify(selectedPlatforms),{expires:30})
+    );
    
    
   };
@@ -126,7 +130,7 @@ const AccountsPage = () => {
       (platform) => name !== platform.name
     );
     setSelectedPlatforms(filteredList);
-    // Cookies.set('userPlatforms',JSON.stringify(filteredList),{expires:30})
+    Cookies.set('userPlatforms',JSON.stringify(filteredList),{expires:30})
    
   };
 

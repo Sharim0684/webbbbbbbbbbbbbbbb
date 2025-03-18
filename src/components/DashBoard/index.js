@@ -10,14 +10,17 @@ import { Link } from 'react-router-dom';
 
 const DashBoard=()=>{
     return( 
-        <container maxwidth="xl" >
-            <Header/>
-            <Stack direction="row" justifyContent="center" alignItems='center' spacing={2} style={{border:'',height:'90vh'}}>
-            <Box alignSelf='flex-start' sx={{flex:1,border:'',textAlign:'start'}}>
-                <Typography variant='h3' sx={{fontFamily:'Poppins',color:'#561f5b',marginLeft:'100px',marginTop:'100px'}}>Hello User</Typography>
+        <Box>
+            <Box sx={{width:"100%"}}>
+                <Header/>
             </Box>
-            <Box sx={{flex:2,height:"500px",border:'',display:'flex',flexDirection:"column",justifyContent:'center',alignItems:'center'}}>
-                    <img src={MediaManagerImg} alt='MediaMangerImg' style={{height:'350px',width:'400px',backgroundColor:'transparent'}} />
+            <Container maxWidth="xl" >            
+            <Stack direction={{xs:"column", md:"row"}} justifyContent="center" alignItems='center'  spacing={2} style={{border:'',height:'auto',}}>
+            <Box alignSelf='flex-start' sx={{flex:1,border:'',textAlign:'start'}}>
+                <Typography variant='h3' sx={{fontFamily:'Poppins',color:'#561f5b',marginLeft:'100px',marginTop:'100px',textAlign:"center"}}>Hello User</Typography>
+            </Box>
+            <Box sx={{flex:2,height:"500px",width:"auto",border:'',display:'flex',flexDirection:"column",justifyContent:'center',alignItems:'center'}}>
+                    <img src={MediaManagerImg} alt='MediaMangerImg' style={{height:'350px',width:"350px",backgroundColor:'transparent'}} />
                     <Typography variant='h5'sx={{textAlign:'',fontFamily:'poppins',color:'#561f5b'}}>Welcome to  Webapp</Typography>
                     <Typography variant='' sx={{fontFamily:'Poppins', color:'blue'}}>Thank you for using Webapp</Typography>
                     <Typography variant='' sx={{fontFamily:'Poppins',color:'#561f5b',marginBottom:'10px'}}>Smart solution to share block post.</Typography>
@@ -25,7 +28,9 @@ const DashBoard=()=>{
 
             </Box>
             </Stack>
-        </container>
+        </Container>
+        </Box>
+        
 
     )
 }
