@@ -1,4 +1,5 @@
 import React, { useEffect, useState,} from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Button,
   InputBase,
@@ -41,27 +42,31 @@ const AccountsPage = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  // const[searchParms]=useSearchParams()
+
+ 
 
   const checkLoginStatus = () => {
+
+    // const code=searchParms.get("code")
     // Check URL parameters for access_token or error
-   
-    const params = new URLSearchParams(window.location.hash.substring(1));
+    // const params = new URLSearchParams(window.location.hash.substring(1));
+    const params = new URLSearchParams(window.location);
     const accessToken = params.get("access_token");
     const error = params.get("error");
-    console.log(params)
+     console.log(params)
 
-    if (accessToken) {
-      console.log("Login Successful! Token:", accessToken);
-    } else if (error) {
-      console.error("Login Error:", error);
-    } else {
-      console.warn("Login popup closed without completing authentication.");
-    }
+    // if (accessToken) {
+    //   console.log("Login Successful! Token:", accessToken);
+    // } else if (error) {
+    //   console.error("Login Error:", error);
+    // } else {
+    //   console.warn("Login popup closed without completing authentication.");
+    // }
   };
 
   // Handle platform selection
-  const handleSelect =async(platform) => {  
-   
+  const handleSelect =(platform) => {  
    
     //url handling and pop display///
 
@@ -71,10 +76,10 @@ const AccountsPage = () => {
 
     // let loginUrl='';
     // if(platform.name==='Facebook'){
-    //   loginUrl="http://localhost:8000/api/facebook-login/"
+    //   loginUrl=""
     // }
     // else if(platform.name==="LinkedIn"){
-    //   loginUrl=''
+    //   loginUrl="http://127.0.0.1:8000/linkedin/login/"
     // }
     // else if(platform.name==='Instagram'){
     //   loginUrl=''
@@ -85,14 +90,12 @@ const AccountsPage = () => {
 
   // with appId provide //////
 
-   const appId="9296047703797645"
-   const redirectUrl=window.location.origin
-  // const loginUrl = `https://www.facebook.com/v17.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(
-  //   redirectUrl
-  // )}&response_type=token`;
-
- const loginUrl= "http://127.0.0.1:8000/facebook-login"
-
+  const clientId = "770hhbho9r3su0";  
+  const redirectUri = "http://localhost:3000/linkedin-callback";
+  const scope = "r_liteprofile r_emailaddress";
+  // const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
+   // const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=r_liteprofile%20r_emailaddress%20w_member_social`;
+  const loginUrl="http://127.0.0.1:8000/linkedin/login/"
     const width = 600;
     const height = 600;
     const left = (window.screen.width - width) / 2;
@@ -103,20 +106,20 @@ const AccountsPage = () => {
       "LoginPopup",
       `height=${height},width=${width},top=${top},left=${left}`
     );
+    //  const popup=window.open(linkedInAuthUrl, "_self");
    
 
     const checkPopupClosed = setInterval(() => {
       if (popup?.closed) {
         clearInterval(checkPopupClosed);
-        // window.location.reload(); // Refresh page after login success
         checkLoginStatus()
       }
     }, 1000);
 
-    setSelectedPlatforms((prev) =>
-      prev.includes(platform) ? [...prev]  : [...prev, platform],
-      Cookies.set('userPlatforms', JSON.stringify(selectedPlatforms),{expires:30})
-    );
+    // setSelectedPlatforms((prev) =>
+    //   prev.includes(platform) ? [...prev]  : [...prev, platform],
+    //   Cookies.set('userPlatforms', JSON.stringify(selectedPlatforms),{expires:30})
+    // );
    
    
   };
@@ -133,6 +136,8 @@ const AccountsPage = () => {
     Cookies.set('userPlatforms',JSON.stringify(filteredList),{expires:30})
    
   };
+
+ 
 
 
  
@@ -285,3 +290,82 @@ const AccountsPage = () => {
 
 export default AccountsPage;
 
+// import React, { useState, useEffect } from "react";
+// import { Button, Typography } from "@mui/material";
+// import axios from "axios";
+
+// const CLIENT_ID = "770hhbho9r3su0"; // Replace with your LinkedIn Client ID
+// const REDIRECT_URI = "http://127.0.0.1:8000/linkedin/callback/"; // Must match LinkedIn App settings
+// const STATE = "web-app"; // A random string for security
+
+// const AccountsPage = () => {
+//   const [accessToken, setAccessToken] = useState(null);
+//   const [error, setError] = useState(null);
+
+//   const handleLogin = () => {
+//     const linkedInAuthURL = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
+//       REDIRECT_URI
+//     )}&state=${STATE}&scope=r_liteprofile%20r_emailaddress`;
+
+//     window.open(linkedInAuthURL, "_self"); // Opens LinkedIn login in the same tab
+//   };
+
+//   const fetchAccessToken = async (authCode) => {
+//     try {
+//       const response = await axios.post(
+//         "https://www.linkedin.com/oauth/v2/accessToken",
+//         new URLSearchParams({
+//           grant_type: "authorization_code",
+//           code: authCode,
+//           redirect_uri: REDIRECT_URI,
+//           client_id: CLIENT_ID,
+//           client_secret: "YOUR_LINKEDIN_CLIENT_SECRET", // Replace with your LinkedIn Client Secret
+//         }),
+//         {
+//           headers: { "Content-Type": "application/x-www-form-urlencoded" },
+//         }
+//       );
+
+//       setAccessToken(response.data.access_token);
+//       setError(null);
+//     } catch (err) {
+//       setError("Failed to get access token. Please try again.");
+//     }
+//   };
+
+//   // Check for auth code in URL after LinkedIn redirects
+//   useEffect(() => {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const code = urlParams.get("code");
+//     const error = urlParams.get("error");
+//     console.log(code)
+
+//     if (code) {
+//       fetchAccessToken(code);
+//     } else if (error) {
+//       setError("LinkedIn login failed.");
+//     }
+//   }, []);
+
+//   return (
+//     <div style={{ textAlign: "center", marginTop: "20px" }}>
+//       <Button variant="contained" color="primary" onClick={handleLogin}>
+//         Login with LinkedIn
+//       </Button>
+
+//       {accessToken && (
+//         <Typography sx={{ marginTop: "20px", color: "green" }}>
+//           ✅ Access Token: {accessToken}
+//         </Typography>
+//       )}
+
+//       {error && (
+//         <Typography sx={{ marginTop: "20px", color: "red" }}>
+//           ❌ Error: {error}
+//         </Typography>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default AccountsPage;

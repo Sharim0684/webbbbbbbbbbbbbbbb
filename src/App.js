@@ -16,6 +16,7 @@ import ThankYouPage from './components/ThankyouPage/thankyouPage';
 import ProfilePage from './components/profile/profile';
 import HistoryPage from './components/History/history';
 import NotFoundPage from './components/NotFoundPage';
+import Templates from './components/Templates';
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
        </BrowserRouter>
           {/* <Route exact path='/schedulePage' Component={SetupSchedulePage} /> */}
           {/* <Route exact path='/autoPost' Component={AutoPostSettings} /> */}
+          {/* <Templates/> */}
 
        
     </div>

@@ -5,12 +5,13 @@ import BrandLogo from '../Assets/logo symbol png.png'
 
 
 const Preview=(props)=>{
-    const{option}=props
+    const{option,data,file,link}=props
+    const message=data
     const date=new Date()
 
     const getLinkCardview=()=>(
-        <Card sx={{border:'1px solid blue'}}>
-            <CardHeader
+        <Card sx={{border:'',p:2,}}>
+            <CardHeader sx={{backgroundColor:'lightgrey',textAlign:"start"}}
                 avatar={
                 <Avatar sx={{ bgcolor:"red", }} aria-label="recipe">
                     K
@@ -19,24 +20,26 @@ const Preview=(props)=>{
                     title="KhkrInnovatorsTechSolutions"
                     subheader={date.toLocaleDateString()}
             />
+            <Typography variant="h6" color="#561f5b" sx={{overflowWrap:"break-word",textAlign:'center'}} >{message}</Typography>
 
             <CardMedia
                 component="img"
-                height="190"
+                height="150"
                 width="90%"
-                image={BrandLogo}                
+                image={file? file : BrandLogo}                
                 alt="image"
-                sx={{border:'',objectFit:'contain'}}
+                sx={{border:'',objectFit:'contain',mb:2,mt:2}}
             />    
+            {/* <img src={file?file:BrandLogo} alt="img" style={{width:'100%'}}/> */}
             <CardContent>
-                <Link href="#" underline="hover">"https://KHKRInnovatorsTech.com"</Link>
+                <Link href="#" underline="hover">{link ? link :'www.khkrinnovatorstech.com'}</Link>
             </CardContent>
         </Card> 
     )
 
     const getOnlyCustomMessageView=()=>(
-        <Card>
-            <CardHeader  avatar={
+        <Card sx={{p:2}} >
+            <CardHeader sx={{backgroundColor:'lightgrey',textAlign:'start'}}  avatar={
                 <Avatar sx={{ bgcolor:"red", }} aria-label="recipe">
                     K
                 </Avatar>
@@ -45,14 +48,15 @@ const Preview=(props)=>{
                     subheader={date.toLocaleDateString()}
             />    
              <CardContent>
-                <Link href="#" underline="hover">"https://KHKRInnovatorsTech.com"</Link>
+                {/* <Link href="#" underline="hover">"https://KHKRInnovatorsTech.com"</Link> */}
+                <Typography variant="h6" color="#561f5b" sx={{ overflowWrap: "break-word",textAlign:'start'}}>{data}</Typography>
             </CardContent>    
         </Card>
     )
 
     const getFeaturedImageView=()=>(
-        <Card>
-        <CardHeader  avatar={
+        <Card sx={{p:2}}>
+        <CardHeader sx={{backgroundColor:'lightgrey'}}  avatar={
             <Avatar sx={{ bgcolor:"red", }} aria-label="recipe">
                 K
             </Avatar>
@@ -62,7 +66,7 @@ const Preview=(props)=>{
         />    
          <CardMedia
                 component="img"
-                height="190"
+                height="150"
                 width="90%"
                 image={BrandLogo}                
                 alt="image"
@@ -99,7 +103,7 @@ const Preview=(props)=>{
 
 
     return(
-        <Box>
+        <Box sx={{width:"100%",border:''}}>
             <Typography mb={5}>Preview</Typography>
             {getCustomviews(option)}
            
