@@ -1,5 +1,5 @@
 import React, { useEffect, useState,} from "react";
-import { useSearchParams } from "react-router-dom";
+import {  useParams, useSearchParams } from "react-router-dom";
 import {
   Button,
   InputBase,
@@ -25,14 +25,14 @@ import SidebarListItem from "../SidebarListItem";
 import FacebookLogo from '../Assets/facebook.png'
 import InstragramLogo from '../Assets/instragram.png'
 import LinkedInLogo from '../Assets/linkedin.png'
-import SnapchatLogo from '../Assets/sanpchat.png'
+import TwitterLogo from '../Assets/twitter.jpg'
 import Cookies from 'js-cookie'
 
 const socialPlatforms = [
   { name: "Facebook", logo:FacebookLogo },
   { name: "LinkedIn", logo:LinkedInLogo },
   { name: "Instagram", logo:InstragramLogo },
-  { name: "Snapchat", logo:SnapchatLogo},
+  { name: "Twitter", logo:TwitterLogo},
 
 ];
 
@@ -42,19 +42,20 @@ const AccountsPage = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
-  // const[searchParms]=useSearchParams()
+  const [accessToken, setAccessToken] = useState(null);
+  const [searchParams] = useSearchParams();
 
  
 
-  const checkLoginStatus = () => {
-
-    // const code=searchParms.get("code")
+  const checkLoginStatus =async () => {
+   
+    
+   
     // Check URL parameters for access_token or error
-    // const params = new URLSearchParams(window.location.hash.substring(1));
-    const params = new URLSearchParams(window.location);
-    const accessToken = params.get("access_token");
-    const error = params.get("error");
-     console.log(params)
+    // const params = new URLSearchParams(window.location);
+    // const code = params.get("code");
+    // const error = params.get("error");
+    //  console.log(params)
 
     // if (accessToken) {
     //   console.log("Login Successful! Token:", accessToken);
@@ -70,60 +71,152 @@ const AccountsPage = () => {
    
     //url handling and pop display///
 
-    // const currentURL = window.location.href;
-    // const targetURL = `http://localhost:8000/api/facebook-login/ ? redirect=${encodeURIComponent(currentURL)}`;
-    // window.location.href = targetURL; 
+   
 
-    // let loginUrl='';
-    // if(platform.name==='Facebook'){
-    //   loginUrl=""
-    // }
-    // else if(platform.name==="LinkedIn"){
-    //   loginUrl="http://127.0.0.1:8000/linkedin/login/"
-    // }
-    // else if(platform.name==='Instagram'){
-    //   loginUrl=''
-    // }
-    // else if(platform.name==='Snapchat'){
-    //   loginUrl=''
-    // }   
+    let oauthUrl="";
+    let tokenUrl="";
+    if(platform.name==='Facebook'){
+      oauthUrl="https://www.facebook.com/v18.0/dialog/oauth"
+                  + "?response_type=code"
+                  + "&client_id=629561893196546"
+                  + "&redirect_uri=https://127.0.0.1:8000/accounts/facebook/callback/"
+                  + "&scope=email,public_profile";
 
+      tokenUrl = "https://graph.facebook.com/v18.0/oauth/access_token"
+
+    }
+    else if(platform.name==="LinkedIn"){
+      oauthUrl="https://www.linkedin.com/oauth/v2/authorization"
+                  + "?response_type=code"
+                  + "&client_id=86embapip2hnsy"
+                  + "&redirect_uri=http://127.0.0.1:8000/api/linkedin_auth/callback/"
+                  + "&scope=openid%20profile%20w_member_social%20email";  
+      tokenUrl="https://www.linkedin.com/oauth/v2/accessToken"
+      }
+    else if(platform.name==='Instagram'){
+      oauthUrl="https://api.instagram.com/oauth/authorize"
+                  + "?response_type=code"
+                  + "&client_id=10091952917526567"
+                  + "&redirect_uri=https://127.0.0.1:8000/accounts/instagram/callback/"
+                  + "&scope=public_profile";
+
+      tokenUrl="https://api.instagram.com/oauth/access_token"
+    }
+    else if(platform.name==='Twitter'){
+      oauthUrl="https://twitter.com/i/oauth2/authorize"
+                  + "?response_type=code"
+                  + "&client_id=RU5qckV3eER2OTlEMU5wV0l2VmQ6MTpjaQ"
+                  + "&redirect_uri=https://127.0.0.1:8000/accounts/twitter/callback/"
+                  + "&scope=tweet.read users.read follows.read";
+      tokenUrl="https://api.twitter.com/2/oauth2/token"
+    }   
+
+   
   // with appId provide //////
 
-  const clientId = "770hhbho9r3su0";  
-  const redirectUri = "http://localhost:3000/linkedin-callback";
-  const scope = "r_liteprofile r_emailaddress";
-  // const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
-   // const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=r_liteprofile%20r_emailaddress%20w_member_social`;
-  const loginUrl="http://127.0.0.1:8000/linkedin/login/"
+
+
+  //  const clientId = "770hhbho9r3su0";  
+  // const redirectUri = "http://127.0.0.1:8000/linkedin/callback/";
+  //  const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=86embapip2hnsy&redirect_uri=${encodeURIComponent("redirectUri")}&scope=r_liteprofile%20r_emailaddress%20w_member_social`;
+  // const loginUrl="http://127.0.0.1:8000/linkedin/login/"
+
+  //  const linkedInAuthURL = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78jeca4u9j43ag&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Flinkedin%2Fcallback%2F&scope=openid+profile+w_member_social+email"
+  // const instaUrl = "https://api.instagram.com/oauth/authorize"
+  // + "?response_type=code"
+  // + "&client_id=10091952917526567"
+  // + "&redirect_uri=https://127.0.0.1:8000/accounts/instagram/callback/"
+  // +"&scope=public_profile";
+  
+
+  // &scope=r_liteprofile%20r_emailaddress
+  // + "&scope=openid,profile,w_member_social,email";
+
     const width = 600;
     const height = 600;
     const left = (window.screen.width - width) / 2;
     const top = (window.screen.height - height) / 2;
 
     const popup=window.open(
-      loginUrl,
+      oauthUrl,
       "LoginPopup",
       `height=${height},width=${width},top=${top},left=${left}`
     );
-    //  const popup=window.open(linkedInAuthUrl, "_self");
+    // const popup=window.open(loginUrl, "_self");
+
    
-
-    const checkPopupClosed = setInterval(() => {
-      if (popup?.closed) {
-        clearInterval(checkPopupClosed);
-        checkLoginStatus()
+    const checkPopup = setInterval(() => {
+     
+      if (!popup || popup.closed) {
+          clearInterval(checkPopup);
+          return;
       }
-    }, 1000);
+      try {
+          const popupUrl = popup.location.href;
+          console.log(popupUrl)
+          if (popupUrl.includes("code=")) {
+              const authCode = new URL(popupUrl).searchParams.get("code");
+              popup.close();
+              clearInterval(checkPopup);
+              exchangeCodeForToken(authCode,tokenUrl);
+          }
+          // if(popup.location.origin==="http://127.0.0.1:8000"){
+          //   console.log(true)
+          // }
+          
+      } catch (error) {
+          console.log("Waiting for login...");
+      }
+  }, 1000);
 
-    // setSelectedPlatforms((prev) =>
-    //   prev.includes(platform) ? [...prev]  : [...prev, platform],
-    //   Cookies.set('userPlatforms', JSON.stringify(selectedPlatforms),{expires:30})
-    // );
+
+
+    setSelectedPlatforms((prev) =>
+      prev.includes(platform) ? [...prev]  : [...prev, platform],
+      Cookies.set('userPlatforms', JSON.stringify(selectedPlatforms),{expires:30})
+    );
    
    
   };
   // prev.filter((p) => p !== platform)
+  // http://127.0.0.1:8000/linkedin/callback/
+  // http://127.0.0.1:8000/linkedin/get-access-token/
+  const exchangeCodeForToken = async (code,tokenUrl) => {
+    try {
+        const response = await fetch({tokenUrl}, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code }),
+        });
+        const data = await response.json();
+        console.log(data)
+        if (data.access_token) {
+            setAccessToken(data.access_token);
+            console.log("Access Token:", data.access_token);
+        } else {
+            console.error("Failed to get access token", data);
+        }
+    } catch (error) {
+        console.error("Error exchanging code for token:", error);
+    }
+};
+
+//sharim given code///
+// function getCookie(name) {
+//   let cookies = document.cookie.split(';');
+//   for (let i = 0; i < cookies.length; i++) {
+//       let cookie = cookies[i].trim();
+//       if (cookie.startsWith(name + '=')) {
+//           return cookie.substring(name.length + 1);
+//       }
+//   }
+//   return null;
+// }
+
+// // Access token fetch karein
+// let token = getCookie('access_token');
+
+// console.log("Access Token from Cookies:", token);
 
 
 
@@ -137,7 +230,22 @@ const AccountsPage = () => {
    
   };
 
+  // useEffect(()=>{
+  //   const getAccessToken=async()=>{
+  //     const url="/get-access-token/"
+  //   const options={
+  //     method:'GET'
+  //   }
+  //   const response=await fetch(url,options)
+  //   const data=await response.json()
+  //   console.log(data)
+  //   }
+
+  //   getAccessToken()
+  // },)
+
  
+
 
 
  
@@ -159,9 +267,9 @@ const AccountsPage = () => {
   }, []);
 
   // useEffect(()=>{
-  //   const values=Cookies.get('userPlatforms')
-  //   const formatedData=JSON.parse(values)   
-  //   setSelectedPlatforms(formatedData)
+  //   const code=Cookies.get('linkedin_access_token')
+  //   const accessToken=JSON.parse(code)   
+  //   console.log(accessToken)
    
 
   // },[])
@@ -269,12 +377,7 @@ const AccountsPage = () => {
                             ? "Connected"
                             : "Connect"}
                         </Button>
-                         {/* <FacebookLogin
-                          appId="960126086189816"
-                          id="facebook"
-                          style={{display:''}}
-                          callback={responseFacebook}
-                        />  */}
+                        
                       </CardContent>
                     </Card>
                   </Grid>
@@ -290,12 +393,14 @@ const AccountsPage = () => {
 
 export default AccountsPage;
 
+
+
 // import React, { useState, useEffect } from "react";
 // import { Button, Typography } from "@mui/material";
 // import axios from "axios";
 
 // const CLIENT_ID = "770hhbho9r3su0"; // Replace with your LinkedIn Client ID
-// const REDIRECT_URI = "http://127.0.0.1:8000/linkedin/callback/"; // Must match LinkedIn App settings
+// const REDIRECT_URI = "http://localhost:3000/add-accounts"; // Must match LinkedIn App settings
 // const STATE = "web-app"; // A random string for security
 
 // const AccountsPage = () => {

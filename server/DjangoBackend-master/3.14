@@ -1,0 +1,23 @@
+Collecting django
+  Using cached Django-5.1.6-py3-none-any.whl.metadata (4.2 kB)
+Collecting djangorestframework
+  Using cached djangorestframework-3.15.2-py3-none-any.whl.metadata (10 kB)
+Collecting psycopg2-binary
+  Using cached psycopg2_binary-2.9.10-cp311-cp311-win_amd64.whl.metadata (5.0 kB)
+Collecting python-decouple
+  Using cached python_decouple-3.8-py3-none-any.whl.metadata (14 kB)
+Collecting asgiref<4,>=3.8.1 (from django)
+  Using cached asgiref-3.8.1-py3-none-any.whl.metadata (9.3 kB)
+Collecting sqlparse>=0.3.1 (from django)
+  Using cached sqlparse-0.5.3-py3-none-any.whl.metadata (3.9 kB)
+Collecting tzdata (from django)
+  Using cached tzdata-2025.1-py2.py3-none-any.whl.metadata (1.4 kB)
+Using cached Django-5.1.6-py3-none-any.whl (8.3 MB)
+Using cached djangorestframework-3.15.2-py3-none-any.whl (1.1 MB)
+Using cached psycopg2_binary-2.9.10-cp311-cp311-win_amd64.whl (1.2 MB)
+Using cached python_decouple-3.8-py3-none-any.whl (9.9 kB)
+Using cached asgiref-3.8.1-py3-none-any.whl (23 kB)
+Using cached sqlparse-0.5.3-py3-none-any.whl (44 kB)
+Using cached tzdata-2025.1-py2.py3-none-any.whl (346 kB)
+Installing collected packages: python-decouple, tzdata, sqlparse, psycopg2-binary, asgiref, django, djangorestframework
+Successfully installed asgiref-3.8.1 django-5.1.6 djangorestframework-3.15.2 psycopg2-binary-2.9.10 python-decouple-3.8 sqlparse-0.5.3 tzdata-2025.1
