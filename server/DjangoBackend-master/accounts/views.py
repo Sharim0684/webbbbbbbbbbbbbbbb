@@ -16,11 +16,15 @@ User = get_user_model()
 FACEBOOK_APP_ID = settings.SOCIAL_AUTH_FACEBOOK_KEY
 FACEBOOK_APP_SECRET = settings.SOCIAL_AUTH_FACEBOOK_SECRET
 REDIRECT_URI = "https://127.0.0.1:8000/accounts/facebook/callback/"
+# REDIRECT_URI = "http://localhost:3000/facebook-callback"
+
 # Create your views 
 class FacebookLoginView(APIView):
     def get(self, request):
         """Redirects user to Facebook Login"""
         fb_auth_url = "https://www.facebook.com/v18.0/dialog/oauth"
+        # fb_auth_url = "https://www.facebook.com/dialog/oauth"
+
         params = {
             "client_id": FACEBOOK_APP_ID,
             "redirect_uri": REDIRECT_URI,
@@ -39,6 +43,8 @@ class FacebookCallbackView(APIView):
 
         # Exchange code for access token
         token_url = "https://graph.facebook.com/v18.0/oauth/access_token"
+        # token_url = "https://graph.facebook.com/oauth/access_token"
+
         params = {
             "client_id": FACEBOOK_APP_ID,
             "client_secret": FACEBOOK_APP_SECRET,
@@ -51,6 +57,7 @@ class FacebookCallbackView(APIView):
             return Response({"error": "Failed to get access token", "details": token_response}, status=400)
 
         access_token = token_response["access_token"]
+        # print(access_token)
 
         # Get user info from Facebook
         user_info_url = "https://graph.facebook.com/me"
@@ -69,7 +76,35 @@ class FacebookCallbackView(APIView):
             },
             "access_token": access_token,
         })
-        
+
+
+# import requests
+# from django.http import JsonResponse
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+
+# class FacebookAuthView(APIView):
+#     def post(self, request):
+#         code = request.data.get('code')
+#         if not code:
+#             return Response({'error': 'Missing code'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         response = requests.post('https://api.facebook.com/oauth/access_token', data={
+#             'client_id': '697730906253832',
+#             'client_secret': '30f3d8be77fdd7e0caaad07edfbf3336',
+#             'grant_type': 'authorization_code',
+#             'redirect_uri': 'http://localhost:3000/facebook-callback',
+#             'code': code,
+#         })
+
+#         if response.status_code == 200:
+#             return Response(response.json())
+#         else:
+#             return Response({'error': 'Failed to exchange code'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 INSTAGRAM_APP_ID = settings.SOCIAL_AUTH_INSTAGRAM_KEY
 INSTAGRAM_APP_SECRET = settings.SOCIAL_AUTH_INSTAGRAM_SECRET
 INSTAGRAM_REDIRECT_URI = "https://127.0.0.1:8000/accounts/instagram/callback/"
@@ -104,6 +139,8 @@ class InstagramCallbackView(APIView):
         }
 
         token_response = requests.post(token_url, data=payload).json()
+        
+
 
         if "access_token" not in token_response:
             return Response({"error": "Failed to get access token", "details": token_response}, status=400)

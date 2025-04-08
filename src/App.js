@@ -17,6 +17,8 @@ import ProfilePage from './components/profile/profile';
 import HistoryPage from './components/History/history';
 import NotFoundPage from './components/NotFoundPage';
 import Templates from './components/Templates';
+import SocialMediaConnect from './components/AccountsPage/SocialMediaConnect';
+import FacebookCallback from './components/FacebookCallback';
 
 
 function App() {
@@ -36,6 +38,7 @@ function App() {
           <Route exact path='/thankYouPage' Component={ThankYouPage} />
           <Route exact path='/profile' Component={ProfilePage} />
           <Route exact path='/history' Component={HistoryPage} />
+          <Route exact path='/facebook-callback' Component={FacebookCallback} />
           <Route path='*' Component={NotFoundPage}/>
         </Routes>
        </BrowserRouter>
