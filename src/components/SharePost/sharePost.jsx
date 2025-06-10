@@ -1,0 +1,737 @@
+import React, { useState, useRef, useEffect } from "react";
+import {
+    Stack,
+    Typography,
+    Box,
+    TextField,
+    Button,
+    FormControlLabel,
+    Checkbox,
+    Container,
+    FormGroup,
+    Modal,
+    IconButton,
+    Divider,
+    Switch,
+} from "@mui/material";
+import Header from "../Header";
+import { Close } from "@mui/icons-material";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import XIcon from '@mui/icons-material/X';
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { styled } from "@mui/system";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
+
+const CustomQuill = styled("div")({
+    "& .ql-editor": {
+        minHeight: "150px",
+    },
+    "&:hover .ql-toolbar, &:hover .ql-container": {
+        borderColor: "#561f5b !important",
+    },
+});
+
+const SharePostPage = () => {
+    const [userPlatforms,setUserPlatforms]=useState([]);
+    const [selectedPlatforms, setSelectedPlatforms] = useState([]);
+    const [showCheckboxes, setShowCheckboxes] = useState(false);
+    const [selectAll, setSelectAll] = useState(false);
+    const [postContent, setPostContent] = useState("");
+    const [postTitle, setPostTitle] = useState("");
+    const [enableLikes, setEnableLikes] = useState(false);
+    const [enableComments, setEnableComments] = useState(false);
+    const [scheduleError, setScheduleError] = useState("");
+    const [errors, setErrors] = useState({
+        title: "",
+        content: "",
+        platform: ""
+    });
+    const [error, setError] = useState("");
+    const [uploadedFile, setUploadedFile] = useState(null);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [scheduleOpen, setScheduleOpen] = useState(false);
+    const [scheduleDate, setScheduleDate] = useState("");
+    const [scheduleTime, setScheduleTime] = useState("");
+    const [enableReminder, setEnableReminder] = useState(false);
+    const quillRef = useRef(null);
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        const platforms = JSON.parse(Cookies.get('userPlatforms'));
+        setUserPlatforms(platforms);
+    }, []);
+
+    const handlePlatformClick = (platform) => {
+        setSelectedPlatforms([platform]);
+        setError("");
+    };
+
+    const handleCheckboxClick = (platform) => {
+        setSelectedPlatforms((prevSelected) => {
+            const newSelected = prevSelected.includes(platform)
+                ? prevSelected.filter((p) => p !== platform)
+                : [...prevSelected, platform];
+            return newSelected;
+        });
+        setError("");
+    };
+
+    const handleSelectAll = () => {
+        if (selectAll) {
+            setSelectedPlatforms([]);
+        } else {
+            setSelectedPlatforms(userPlatforms.map((p) => p.name));
+        }
+        setSelectAll(!selectAll);
+        setError("");
+    };
+
+    const handleCancel = () => {
+        setSelectedPlatforms([]);
+        setShowCheckboxes(false);
+        setSelectAll(false);
+    };
+
+    const likesSwitch = (event) => {
+        setEnableLikes(event.target.checked);
+    };
+
+    const commentsSwitch = (event) => {
+        setEnableComments(event.target.checked);
+    };
+
+    const handlePostChange = (content) => {
+        setPostContent(content);
+
+        if (selectedPlatforms.length === 0) {
+            setErrors((prev) => ({ ...prev, content: "Please select a platform." }));
+            return;
+        }
+
+        const characterLimit = selectedPlatforms.length > 1
+            ? 270
+            : userPlatforms.find(p => p.name === selectedPlatforms[0])?.limit || 270;
+
+        if (content.length > characterLimit) {
+            setErrors((prev) => ({ ...prev, content: `Character limit exceeded! Max allowed: ${characterLimit} characters.` }));
+        } else {
+            setErrors((prev) => ({ ...prev, content: "" }));
+        }
+    };
+
+    const handleTitleChange = (event) => {
+        setPostTitle(event.target.value);
+        setErrors((prev) => ({ ...prev, title: event.target.value.trim() ? "" : "Enter Post Title" }));
+    };
+
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        setUploadedFile(file);
+        const fileUrl = URL.createObjectURL(file);
+        const editor = quillRef.current.getEditor();
+        editor.focus();
+
+        const range = editor.getSelection() || { index: editor.getLength(), length: 0 };
+
+        if (file.type.startsWith("image/")) {
+            editor.insertEmbed(range.index, "image", fileUrl);
+        } else if (file.type.startsWith("video/")) {
+            editor.insertEmbed(range.index, "video", fileUrl);
+        } else {
+            editor.insertText(range.index, `[File: ${file.name}](${fileUrl})`);
+        }
+    };
+
+    const handlePublish = () => {
+        let newErrors = { title: "", content: "", platform: "" };
+
+        if (!postTitle.trim()) newErrors.title = "Enter Post Title";
+        if (!postContent.trim()) newErrors.content = "Enter Post Content";
+        if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
+
+        setErrors(newErrors);
+
+        if (!newErrors.title && !newErrors.content && !newErrors.platform) {
+            setPreviewOpen(true);
+        }
+    };
+
+    const handleEdit = () => {
+        setPreviewOpen(false);
+    };
+
+    const handlePost = async () => {
+        try {
+            const linkedinToken = Cookies.get('linkedin_access_token');
+            const facebookToken = Cookies.get('facebook_access_token');
+
+            const isLinkedInSelected = selectedPlatforms.includes('LinkedIn');
+            const isFacebookSelected = selectedPlatforms.includes('Facebook');
+
+            const selectedPlatformNames = [];
+            if (isLinkedInSelected) selectedPlatformNames.push('LinkedIn');
+            if (isFacebookSelected) selectedPlatformNames.push('Facebook');
+
+            if (selectedPlatformNames.length === 0) {
+                alert('Please select at least one platform');
+                return;
+            }
+
+            if (isLinkedInSelected && !linkedinToken) {
+                alert('Please connect to LinkedIn first');
+                return;
+            }
+
+            if (isFacebookSelected && !facebookToken) {
+                alert('Please connect to Facebook first');
+                return;
+            }
+
+            const plainTextContent = postContent.replace(/<[^>]+>/g, '');
+
+            const postData = {};
+
+            if (isLinkedInSelected) {
+                postData.linkedin = {
+                    message: `${postTitle}\n\n${plainTextContent}`,
+                    visibility: "PUBLIC"
+                };
+            }
+
+            if (isFacebookSelected) {
+                postData.facebook = {
+                    message: `${postTitle}\n\n${plainTextContent}`,
+                    visibility: "PUBLIC"
+                };
+            }
+
+            console.log('Posting to platforms:', postData);
+
+            const response = await fetch('http://127.0.0.1:8000/social', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setPostTitle('');
+                setPostContent('');
+                setPreviewOpen(false);
+                alert(`Successfully posted to ${selectedPlatformNames.join(' and ')}!`);
+                navigate('/thankYouPage');
+            } else {
+                throw new Error(data.message || 'Failed to post to selected platforms');
+            }
+        } catch (error) {
+            console.error('Error posting:', error);
+            alert('Failed to post. Please try again.');
+        }
+    };
+
+    const handleSetupSchedule = () => {
+        let newErrors = { title: "", content: "", platform: "" };
+
+        if (!postTitle.trim()) newErrors.title = "Enter Post Title";
+        if (!postContent.trim()) newErrors.content = "Enter Post Content";
+        if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
+
+        setErrors(newErrors);
+
+        if (!newErrors.title && !newErrors.content && !newErrors.platform) {
+            setScheduleOpen(true);
+        }
+    };
+
+    const handleSchedule = (date, time) => {
+        if (!date || !time) {
+            setScheduleError("Please select both date and time.");
+            return;
+        }
+
+        setScheduleError("");
+        setScheduleDate(date);
+        setScheduleTime(time);
+
+        const postText = postContent.replaceAll(/<[^>]+>/g, "");
+        const userUploadedFile = uploadedFile ? uploadedFile.name : '';
+        const userScheduleDetails = {
+            dateOfSchedule: date,
+            timeOfSchedule: time,
+            reminderEnabled: enableReminder,
+            userPostDetails: {
+                postTitle,
+                postText,
+                userUploadedFile,
+                enableLikes,
+                enableComments,
+                selectedPlatforms
+            }
+        };
+
+        console.log(userScheduleDetails);
+        // navigate("/history");
+    };
+
+    const handleReminderToggle = (enabled) => {
+        setEnableReminder(enabled);
+    };
+
+    const handleClosePreview = () => {
+        setPreviewOpen(false);
+    };
+
+    const modules = {
+        toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline", "strike"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["link"],
+        ],
+    };
+
+    // ------------------ ✅ NEW CODE ADDED BELOW ------------------
+    const postToLinkedInWithImage = async (message, imagePath) => {
+        try {
+            const response = await fetch('/post_to_linkedin_with_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message, image_path: imagePath }),
+            });
+            const result = await response.json();
+            console.log(result);
+        } catch (error) {
+            console.error('Error posting to LinkedIn with image:', error);
+        }
+    };
+
+    const handlePostWithImage = () => {
+        const message = `${postTitle}\n\n${postContent.replace(/<[^>]+>/g, '')}`;
+        const imagePath = uploadedFile ? uploadedFile.name : '';
+        if (imagePath) {
+            postToLinkedInWithImage(message, imagePath);
+        } else {
+            alert("No image uploaded.");
+        }
+    };
+    
+    return (
+        <Box>
+      {/* Header */}
+      <Box sx={{ width: "100%" }}>
+        <Header />
+      </Box>
+ 
+            <Container maxWidth="xl" sx={{ border: "", marginTop: 5 }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", md: "row" },
+                        minHeight: "auto",
+                        padding: 0,
+                        backgroundColor: "white",
+                    }}
+                >
+                    <Box
+                        sx={{
+                            width: { xs: "100%", md: "30%" },
+                            padding: { xs: 2, md: 5 },
+                            mt: 0,
+                            borderRadius: 2,
+                            backgroundColor: "white",
+                        }}
+                    >
+                        <Stack direction="column" spacing={3}>
+                            <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left" }}>
+                                Select Platforms
+                            </Typography>
+                            {!showCheckboxes && (
+                                <Button
+                                    variant="contained"
+                                    onClick={() => setShowCheckboxes(true)}
+                                    sx={{ mt: 3, backgroundColor: "#561f5b", color: "white", width:"20%", "&:hover": { backgroundColor: "#420f45" } }}
+                                >
+                                    Select
+                                </Button>
+                            )}
+                            {showCheckboxes && (
+                                <Stack direction="row" spacing={2} sx={{ marginTop: 2 }}>
+                                    <Button variant="contained" onClick={handleSelectAll} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
+                                        {selectAll ? "Unselect" : "All"}
+                                    </Button>
+                                    <Button variant="contained" color="secondary" onClick={handleCancel} sx={{ backgroundColor: "#561f5b", color: "white", "&:hover": { backgroundColor: "#420f45" } }}>
+                                        Cancel
+                                    </Button>
+                                </Stack>
+                            )}
+                            <FormGroup sx={{ marginTop: 3, gap: 2 }}>
+                                {userPlatforms.map(({ name, logo }) => (
+                                    <Stack key={name} direction="row" alignItems="center" spacing={2}>
+                                        {showCheckboxes && (
+                                            <Checkbox
+                                                checked={selectedPlatforms.includes(name)}
+                                                onChange={() => handleCheckboxClick(name)}
+                                                sx={{
+                                                    color: "#561f5b",
+                                                    "&.Mui-checked": { color: "#561f5b" }
+                                                }}
+                                            />
+                                        )}
+                                        <Button
+                                            onClick={() => handlePlatformClick(name)}
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "flex-start",
+                                                color: selectedPlatforms.includes(name) ? "#561f5b" : "561f5b",
+                                                "&:hover": { backgroundColor: "#561f5b", color: "white" },
+                                                textTransform: "none",
+                                                width: "100%",
+                                            }}
+                                        >
+                                            <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
+                                                <img src={logo} alt="Logo" style={{height:'30px',width:'30px',borderRadius:'12px'}} />
+                                                <Typography variant="h6">{name}</Typography>
+                                            </Stack>
+                                        </Button>
+                                    </Stack>
+                                ))}
+                            </FormGroup>
+                        </Stack>
+                    </Box>
+                    <Box
+                        sx={{
+                            width: { xs: "100%", md: "60%" },
+                            padding: { xs: 2, md: 5 },
+                            mt: { xs: 3, md: 0 },
+                        }}
+                    >
+                        <Stack spacing={2}>
+                            <Typography variant="h4" sx={{ color: "#561f5b", textAlign: "left", fontSize: { xs: "1.5rem", md: "2rem" } }}>
+                                Create Post
+                            </Typography>
+                            <TextField
+                                label="Post Title"
+                                variant="outlined"
+                                value={postTitle}
+                                onChange={handleTitleChange}
+                                error={!!errors.title}
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        "&.Mui-focused fieldset": {
+                                            borderColor: "#561f5b"
+                                        }
+                                    },
+                                    "& .MuiInputLabel-root.Mui-focused": {
+                                        color: "#561f5b"
+                                    }
+                                }}
+                            />
+                            {errors.title && (
+                                <Typography color="error" sx={{ mt: 1 }}>
+                                    {errors.title}
+                                </Typography>
+                            )}
+                            <Typography variant="h6" sx={{ color: "#561f5b", textAlign: "left" }}>
+                                Post Content
+                            </Typography>
+                            <CustomQuill>
+                                <ReactQuill
+                                    ref={quillRef}
+                                    value={postContent}
+                                    onChange={handlePostChange}
+                                    style={{ height: "200px" }}
+                                    modules={modules}
+                                />
+                            </CustomQuill>
+                            {errors.content && (
+                                <Typography color="error" sx={{ mt: 1 }}>
+                                    {errors.content}
+                                </Typography>
+                            )}
+                            {errors.platform && (
+                                <Typography color="error" sx={{ mt: 1 }}>
+                                    {errors.platform}
+                                </Typography>
+                            )}
+                            <Button
+                                variant="contained"
+                                component="label"
+                                sx={{
+                                    backgroundColor: "#561f5b",
+                                    color: "white",
+                                    "&:hover": { backgroundColor: "#420f45" },
+                                }}
+                            >
+                                Upload Media
+                                <input type="file" hidden onChange={handleFileUpload} />
+                            </Button>
+                        </Stack>
+                        <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        sx={{
+                                            "& .MuiSwitch-switchBase.Mui-checked": {
+                                                color: "#561f5b",
+                                            },
+                                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                                backgroundColor: "#561f5b",
+                                            },
+                                        }}
+                                        checked={enableLikes}
+                                        onChange={likesSwitch}
+                                    />
+                                }
+                                label={enableLikes ? "Disable likes" : "Enable likes"}
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        sx={{
+                                            "& .MuiSwitch-switchBase.Mui-checked": {
+                                                color: "#561f5b",
+                                            },
+                                            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                                backgroundColor: "#561f5b",
+                                            },
+                                        }}
+                                        checked={enableComments}
+                                        onChange={commentsSwitch}
+                                    />
+                                }
+                                label={enableComments ? "Disable comments" : "Enable comments"}
+                            />
+                        </Stack>
+                        <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ marginTop: 2 }}>
+                            <Button
+                                variant="contained"
+                                onClick={handlePublish}
+                                color="primary"
+                                sx={{
+                                    backgroundColor: "#561f5b",
+                                    color: "white",
+                                    "&:hover": { backgroundColor: "#420f45" },
+                                }}
+                            >
+                                Publish Now
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={handleSetupSchedule}
+                                sx={{
+                                    backgroundColor: "#561f5b",
+                                    color: "white",
+                                    "&:hover": { backgroundColor: "#420f45" },
+                                }}
+                            >
+                                Setup Schedule
+                            </Button>
+                        </Stack>
+                    </Box>
+                </Box>
+            </Container>
+            <Modal open={previewOpen} onClose={handleClosePreview}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: { xs: "90%", md: "50%" },
+                        height: "auto",
+                        maxHeight: "80vh",
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 5,
+                        borderRadius: 2,
+                        overflowY: "auto",
+                    }}
+                >
+                    <IconButton
+                        sx={{ position: "absolute", top: 8, right: 8 }}
+                        onClick={handleClosePreview}
+                    >
+                        <Close />
+                    </IconButton>
+                    <Box>
+                        <Typography variant="h5" sx={{ mb: 2, color: '#561f5b' }}>
+                            {postTitle}
+                        </Typography>
+                        <Box sx={{ mb: 2, fontSize: '18px', fontWeight: "500", fontFamily: 'Poppins', color: '#424242' }}>
+                            <div dangerouslySetInnerHTML={{ __html: postContent }} />
+                        </Box>
+                        {(uploadedFile || postContent.includes("http")) && <Divider sx={{ my: 2 }} />}
+                        {uploadedFile && (
+                            <Box sx={{ mb: 2 }}>
+                                {uploadedFile.type.startsWith("image/") ? (
+                                    <img
+                                        src={URL.createObjectURL(uploadedFile)}
+                                        alt="Uploaded"
+                                        style={{ width: "200px", height: "200px", borderRadius: 4 }}
+                                    />
+                                ) : uploadedFile.type.startsWith("video/") ? (
+                                    <video
+                                        controls
+                                        style={{ width: "200px", height: "200px", borderRadius: 4 }}
+                                    >
+                                        <source src={URL.createObjectURL(uploadedFile)} type={uploadedFile.type} />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                ) : (
+                                    <Typography variant="body1">
+                                        <a href={URL.createObjectURL(uploadedFile)} target="_blank" rel="noopener noreferrer">
+                                            {uploadedFile.name}
+                                        </a>
+                                    </Typography>
+                                )}
+                            </Box>
+                        )}
+                        <Box sx={{ mb: 2 }}>
+                            <Typography variant="h6">Selected Platforms:</Typography>
+                            <Stack direction="row" spacing={1}>
+                                {selectedPlatforms.map((platform) => {
+                                    const platformData = userPlatforms.find((p) => p.name === platform);
+                                    return (
+                                        <Box key={platform} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                            {/* <Box sx={{ color: platformData.color }}>{platformData.icon}</Box> */}
+                                            <img src={platformData.logo} alt="Logo" style={{height:"30px",width:'30px',borderRadius:'12px'}}/>
+                                            <Typography>{platformData.name}</Typography>
+                                        </Box>
+                                    );
+                                })}
+                            </Stack>
+                        </Box>
+                        <Stack direction="row" spacing={2} justifyContent="flex-end">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleEdit}
+                                sx={{
+                                    backgroundColor: "#561f5b",
+                                    color: "white",
+                                    "&:hover": { backgroundColor: "#420f45" },
+                                }}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handlePost}
+                                sx={{
+                                    backgroundColor: "#561f5b",
+                                    color: "white",
+                                    "&:hover": { backgroundColor: "#420f45" },
+                                }}
+                            >
+                                Post
+                            </Button>
+                        </Stack>
+                    </Box>
+                </Box>
+            </Modal>
+ 
+            <Modal open={scheduleOpen} onClose={() => setScheduleOpen(false)}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: { xs: "90%", md: 400 },
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2,
+                    }}
+                >
+                    <Typography variant="h6" sx={{ mb: 2, color: "#561f5b" }}>
+                        Schedule Post
+                    </Typography>
+                    <TextField
+                        label="Date"
+                        type="date"
+                        fullWidth
+                        value={scheduleDate}
+                        onChange={(e) => setScheduleDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Time"
+                        type="time"
+                        fullWidth
+                        value={scheduleTime}
+                        onChange={(e) => setScheduleTime(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ mb: 2 }}
+                    />
+                    {scheduleError && (
+                        <Typography color="error" sx={{ mb: 2 }}>
+                            {scheduleError}
+                        </Typography>
+                    )}
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={enableReminder}
+                                onChange={(e) => handleReminderToggle(e.target.checked)}
+                                sx={{
+                                    "& .MuiSwitch-switchBase.Mui-checked": {
+                                        color: "#561f5b",
+                                    },
+                                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                                        backgroundColor: "#561f5b",
+                                    },
+                                }}
+                            />
+                        }
+                        label={enableReminder ? "Disable reminder": "Enable reminder"}
+                    />
+                    <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
+                        <Button
+                            variant="contained"
+                            onClick={() => handleSchedule(scheduleDate, scheduleTime)}
+                            sx={{
+                                backgroundColor: "#561f5b",
+                                color: "white",
+                                "&:hover": { backgroundColor: "#420f45" },
+                            }}
+                        >
+                            Schedule
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setScheduleOpen(false)}
+                            sx={{
+                                borderColor: "#561f5b",
+                                color: "#561f5b",
+                                "&:hover": { borderColor: "#420f45" },
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </Stack>
+                </Box>
+            </Modal>
+        </Box>
+        // dqafkjwbnjkfnk
+    );
+};
+ 
+export default SharePostPage;
+ 
+
