@@ -24,8 +24,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie'
- 
+import Cookies from 'js-cookie';
+
 const CustomQuill = styled("div")({
     "& .ql-editor": {
         minHeight: "150px",
@@ -34,16 +34,9 @@ const CustomQuill = styled("div")({
         borderColor: "#561f5b !important",
     },
 });
- 
-// const platforms = [
-//     { name: "Facebook", icon: <FacebookIcon color='primary' /> },
-//     { name: "Twitter", icon: <XIcon color="primary" sx={{ fontSize: '20px' }} /> },
-//     { name: "Instagram", icon: <InstagramIcon color="primary" /> },
-//     { name: "LinkedIn", icon: <LinkedInIcon color="primary" /> },
-// ];
- 
+
 const SharePostPage = () => {
-    const [userPlatforms,setUserPlatforms]=useState([])
+    const [userPlatforms,setUserPlatforms]=useState([]);
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
@@ -67,17 +60,16 @@ const SharePostPage = () => {
     const quillRef = useRef(null);
     const navigate = useNavigate();
 
-
     useEffect(()=>{
-        const platforms=JSON.parse(Cookies.get('userPlatforms'))
-        setUserPlatforms(platforms)
-    },[])
- 
+        const platforms = JSON.parse(Cookies.get('userPlatforms'));
+        setUserPlatforms(platforms);
+    }, []);
+
     const handlePlatformClick = (platform) => {
         setSelectedPlatforms([platform]);
         setError("");
     };
- 
+
     const handleCheckboxClick = (platform) => {
         setSelectedPlatforms((prevSelected) => {
             const newSelected = prevSelected.includes(platform)
@@ -87,7 +79,7 @@ const SharePostPage = () => {
         });
         setError("");
     };
- 
+
     const handleSelectAll = () => {
         if (selectAll) {
             setSelectedPlatforms([]);
@@ -97,59 +89,56 @@ const SharePostPage = () => {
         setSelectAll(!selectAll);
         setError("");
     };
- 
+
     const handleCancel = () => {
         setSelectedPlatforms([]);
         setShowCheckboxes(false);
         setSelectAll(false);
     };
- 
+
     const likesSwitch = (event) => {
         setEnableLikes(event.target.checked);
     };
- 
+
     const commentsSwitch = (event) => {
         setEnableComments(event.target.checked);
     };
- 
+
     const handlePostChange = (content) => {
-        // const textPost=content.replaceAll(/<[^>]+>/g,"")
-        // console.log(textPost)
         setPostContent(content);
- 
+
         if (selectedPlatforms.length === 0) {
             setErrors((prev) => ({ ...prev, content: "Please select a platform." }));
             return;
         }
- 
+
         const characterLimit = selectedPlatforms.length > 1
             ? 270
             : userPlatforms.find(p => p.name === selectedPlatforms[0])?.limit || 270;
- 
+
         if (content.length > characterLimit) {
             setErrors((prev) => ({ ...prev, content: `Character limit exceeded! Max allowed: ${characterLimit} characters.` }));
         } else {
             setErrors((prev) => ({ ...prev, content: "" }));
         }
     };
- 
+
     const handleTitleChange = (event) => {
         setPostTitle(event.target.value);
         setErrors((prev) => ({ ...prev, title: event.target.value.trim() ? "" : "Enter Post Title" }));
     };
- 
+
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (!file) return;
- 
+
         setUploadedFile(file);
         const fileUrl = URL.createObjectURL(file);
         const editor = quillRef.current.getEditor();
- 
         editor.focus();
- 
+
         const range = editor.getSelection() || { index: editor.getLength(), length: 0 };
- 
+
         if (file.type.startsWith("image/")) {
             editor.insertEmbed(range.index, "image", fileUrl);
         } else if (file.type.startsWith("video/")) {
@@ -158,71 +147,128 @@ const SharePostPage = () => {
             editor.insertText(range.index, `[File: ${file.name}](${fileUrl})`);
         }
     };
- 
+
     const handlePublish = () => {
         let newErrors = { title: "", content: "", platform: "" };
- 
+
         if (!postTitle.trim()) newErrors.title = "Enter Post Title";
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
- 
+
         setErrors(newErrors);
- 
+
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setPreviewOpen(true);
         }
     };
- 
+
     const handleEdit = () => {
         setPreviewOpen(false);
     };
- 
-    const handlePost = () => {
-        const postText=postContent.replaceAll(/<[^>]+>/g, "");
-        const userUploadedFile= uploadedFile ? uploadedFile.name:''
-        const userPostDetails={
-            postTitle,
-            postText,
-            userUploadedFile,
-            enableLikes,
-            enableComments,
-            selectedPlatforms
+
+    const handlePost = async () => {
+        try {
+            const linkedinToken = Cookies.get('linkedin_access_token');
+            const facebookToken = Cookies.get('facebook_access_token');
+
+            const isLinkedInSelected = selectedPlatforms.includes('LinkedIn');
+            const isFacebookSelected = selectedPlatforms.includes('Facebook');
+
+            const selectedPlatformNames = [];
+            if (isLinkedInSelected) selectedPlatformNames.push('LinkedIn');
+            if (isFacebookSelected) selectedPlatformNames.push('Facebook');
+
+            if (selectedPlatformNames.length === 0) {
+                alert('Please select at least one platform');
+                return;
+            }
+
+            if (isLinkedInSelected && !linkedinToken) {
+                alert('Please connect to LinkedIn first');
+                return;
+            }
+
+            if (isFacebookSelected && !facebookToken) {
+                alert('Please connect to Facebook first');
+                return;
+            }
+
+            const plainTextContent = postContent.replace(/<[^>]+>/g, '');
+
+            const postData = {};
+
+            if (isLinkedInSelected) {
+                postData.linkedin = {
+                    message: `${postTitle}\n\n${plainTextContent}`,
+                    visibility: "PUBLIC"
+                };
+            }
+
+            if (isFacebookSelected) {
+                postData.facebook = {
+                    message: `${postTitle}\n\n${plainTextContent}`,
+                    visibility: "PUBLIC"
+                };
+            }
+
+            console.log('Posting to platforms:', postData);
+
+            const response = await fetch('http://127.0.0.1:8000/social', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setPostTitle('');
+                setPostContent('');
+                setPreviewOpen(false);
+                alert(`Successfully posted to ${selectedPlatformNames.join(' and ')}!`);
+                navigate('/thankYouPage');
+            } else {
+                throw new Error(data.message || 'Failed to post to selected platforms');
+            }
+        } catch (error) {
+            console.error('Error posting:', error);
+            alert('Failed to post. Please try again.');
         }
-        console.log(userPostDetails)
-        // navigate("/thankYouPage");
     };
- 
+
     const handleSetupSchedule = () => {
         let newErrors = { title: "", content: "", platform: "" };
- 
+
         if (!postTitle.trim()) newErrors.title = "Enter Post Title";
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
- 
+
         setErrors(newErrors);
- 
+
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setScheduleOpen(true);
         }
     };
- 
+
     const handleSchedule = (date, time) => {
         if (!date || !time) {
             setScheduleError("Please select both date and time.");
             return;
         }
- 
+
         setScheduleError("");
         setScheduleDate(date);
         setScheduleTime(time);
-        // console.log("Post scheduled for:", date, time);
-        const postText=postContent.replaceAll(/<[^>]+>/g, "");
-        const userUploadedFile= uploadedFile ? uploadedFile.name:''
-        const userScheduleDetails={
-            dateOfSchedule:date,
-            timeOfSchedule:time,
-            reminderEnabled:enableReminder,
-            userPostDetails:{
+
+        const postText = postContent.replaceAll(/<[^>]+>/g, "");
+        const userUploadedFile = uploadedFile ? uploadedFile.name : '';
+        const userScheduleDetails = {
+            dateOfSchedule: date,
+            timeOfSchedule: time,
+            reminderEnabled: enableReminder,
+            userPostDetails: {
                 postTitle,
                 postText,
                 userUploadedFile,
@@ -230,22 +276,20 @@ const SharePostPage = () => {
                 enableComments,
                 selectedPlatforms
             }
-        }
-        
+        };
 
-        console.log(userScheduleDetails)
+        console.log(userScheduleDetails);
         // navigate("/history");
     };
- 
+
     const handleReminderToggle = (enabled) => {
         setEnableReminder(enabled);
-        // console.log("Reminder enabled:", enabled);
     };
- 
+
     const handleClosePreview = () => {
         setPreviewOpen(false);
     };
- 
+
     const modules = {
         toolbar: [
             [{ header: [1, 2, false] }],
@@ -254,7 +298,34 @@ const SharePostPage = () => {
             ["link"],
         ],
     };
- 
+
+    // ------------------ ✅ NEW CODE ADDED BELOW ------------------
+    const postToLinkedInWithImage = async (message, imagePath) => {
+        try {
+            const response = await fetch('/post_to_linkedin_with_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message, image_path: imagePath }),
+            });
+            const result = await response.json();
+            console.log(result);
+        } catch (error) {
+            console.error('Error posting to LinkedIn with image:', error);
+        }
+    };
+
+    const handlePostWithImage = () => {
+        const message = `${postTitle}\n\n${postContent.replace(/<[^>]+>/g, '')}`;
+        const imagePath = uploadedFile ? uploadedFile.name : '';
+        if (imagePath) {
+            postToLinkedInWithImage(message, imagePath);
+        } else {
+            alert("No image uploaded.");
+        }
+    };
+    
     return (
         <Box>
       {/* Header */}
@@ -663,3 +734,4 @@ const SharePostPage = () => {
  
 export default SharePostPage;
  
+

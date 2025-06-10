@@ -54,7 +54,10 @@ def linkedin_callback(request):
         response = requests.post(token_url, data=data)
         if response.status_code == 200:
             return Response(response.json(), status=status.HTTP_200_OK)
-        return Response({"error": "Failed to retrieve access token"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": f"Failed to retrieve access token: {response.json()}"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # 3️ Fetch LinkedIn Profile
@@ -63,14 +66,20 @@ def linkedin_user_profile(request):
     serializer = LinkedInTokenSerializer(data=request.GET)
     if serializer.is_valid():
         access_token = serializer.validated_data["access_token"]
-        headers = {"Authorization": f"Bearer {access_token}"}
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "X-Restli-Protocol-Version": "2.0.0"  # Added required version header
+        }
         profile_url = "https://api.linkedin.com/v2/me"
 
         response = requests.get(profile_url, headers=headers)
         if response.status_code == 200:
             profile_data = response.json()
             return Response(profile_data)
-        return Response({"error": "Failed to fetch profile"}, status=response.status_code)
+        return Response(
+            {"error": f"Failed to fetch profile: {response.json()}"}, 
+            status=response.status_code
+        )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # 4️ Post an Update on LinkedIn

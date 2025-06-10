@@ -33,7 +33,9 @@ const ThankYouPage = () => {
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3, width: '100%' }}>
         <Button
           variant="contained"
-          onClick={() => navigate('/')}
+          onClick={() => {
+            navigate('/', { replace: true });
+          }}
           sx={{
             backgroundColor: '#561f5b',
             color: '#ffffff',

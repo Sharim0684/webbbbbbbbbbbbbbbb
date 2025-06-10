@@ -12,6 +12,53 @@ from django.utils.timezone import now
 
 from .models import User, Person
 from .serializers import SignupSerializer, PersonSerializer
+from django.views import View
+from django.http import HttpResponseRedirect
+from django.conf import settings
+
+class InstagramLoginView(View):
+    def get(self, request):
+        instagram_auth_url = (
+            f"https://api.instagram.com/oauth/authorize"
+            f"?client_id={settings.INSTAGRAM_CLIENT_ID}"
+            f"&redirect_uri={settings.INSTAGRAM_REDIRECT_URI}"
+            f"&scope=user_profile,user_media"
+            f"&response_type=code"
+        )
+        return HttpResponseRedirect(instagram_auth_url)
+
+
+from django.views import View
+from django.http import JsonResponse
+import requests
+from django.conf import settings
+
+class InstagramCallbackView(View):
+    def get(self, request):
+        code = request.GET.get('code')
+        if not code:
+            return JsonResponse({'error': 'Authorization code not provided'}, status=400)
+        
+        access_token = self.get_access_token(code)
+        user_info = self.get_user_info(access_token)
+        return JsonResponse(user_info)
+
+    def get_access_token(self, code):
+        token_url = "https://api.instagram.com/oauth/access_token"
+        payload = {
+            'client_id': settings.INSTAGRAM_CLIENT_ID,
+            'client_secret': settings.INSTAGRAM_CLIENT_SECRET,
+            'grant_type': 'authorization_code',
+            'redirect_uri': settings.INSTAGRAM_REDIRECT_URI,
+            'code': code,
+        }
+        response = requests.post(token_url, data=payload)
+        return response.json().get('access_token')
+
+    def get_user_info(self, access_token):
+        user_info_url = f"https://graph.instagram.com/me?fields=id,username&access_token={access_token}"
+        response = requests.get(user_info_url)
+        return response.json()
 
 
 class SignupAPIView(APIView):

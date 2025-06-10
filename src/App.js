@@ -4,6 +4,7 @@ import PasswordRecovery from './components/PasswordRecovery';
 import SignUpForm from './components/SignUpForm';
 import VerificationPage from './components/VerificationPage/verification';
 import SetNewPassword from './components/SetNewPassword';
+import LinkedInCallback from './components/LinkedInCallback';
 
 import './App.css';
 
@@ -39,13 +40,15 @@ function App() {
           <Route exact path='/profile' Component={ProfilePage} />
           <Route exact path='/history' Component={HistoryPage} />
           <Route exact path='/facebook-callback' Component={FacebookCallback} />
+          <Route path="/linkedin-callback" element={<LinkedInCallback />} />
           <Route path='*' Component={NotFoundPage}/>
         </Routes>
        </BrowserRouter>
           {/* <Route exact path='/schedulePage' Component={SetupSchedulePage} /> */}
           {/* <Route exact path='/autoPost' Component={AutoPostSettings} /> */}
           {/* <Templates/> */}
-
+      {/* Remove this line */}
+      {/* <SocialMediaPost /> */}
        
     </div>
   );

@@ -25,45 +25,86 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-c*az1xy2-#1h5%^85(cft*j@!1ly#5y^0+r9-f2u-ct-svpkq_"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Remove duplicate settings and set proper development configurations
 DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-ALLOWED_HOSTS = []
+# SSL settings for development
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
+# Remove or set to False for development
+SECURE_BROWSER_XSS_FILTER = False
+SECURE_CONTENT_TYPE_NOSNIFF = False
+SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
 
-# Application definition
-
-INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "rest_framework",
-    "api",
-    "accounts",
-    "sslserver",
-    "corsheaders", 
-    "django_extensions",
-]
-
-MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
+# CORS settings
+# Remove duplicate CORS settings and consolidate them
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-# CORS_ALLOW_ALL_ORIGINS = True 
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'OPTIONS'
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Ensure CORS middleware is properly placed
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Must be at the top
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# Additional required settings
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CORS_ORIGIN_ALLOW_ALL = False
+FRONTEND_URL = 'http://localhost:3000'
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 ROOT_URLCONF = "DjangoCore.urls"
 
 TEMPLATES = [
@@ -90,14 +131,12 @@ WSGI_APPLICATION = "DjangoCore.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+
 
 
 ADMIN_NAME = config("ADMIN_NAME", default=None)
@@ -154,3 +193,124 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Add this line to specify the custom user model
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+    'accounts',
+    'api',  # Add this line
+    'django_extensions',
+]
+
+# Instagram OAuth Settings
+SOCIAL_AUTH_INSTAGRAM_KEY = '626565652694914'
+SOCIAL_AUTH_INSTAGRAM_SECRET = '31ca0626702771ee97fd02'
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'OPTIONS'
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'access-control-allow-credentials',
+]
+
+# Add these settings
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+# Update ALLOWED_HOSTS if needed
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Add these settings at the bottom of the file
+INSTAGRAM_APP_ID = '600172066369636'
+INSTAGRAM_APP_SECRET = '2a3f8f3c49c0486ba7194279b9de8c6f'  # Replace with your actual app secret
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Moved up
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+
+# Instagram OAuth Settings
+SOCIAL_AUTH_INSTAGRAM_KEY = '626565652694914'
+SOCIAL_AUTH_INSTAGRAM_SECRET = '31ca0626702771ee97fd02'
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'OPTIONS'
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'access-control-allow-credentials',
+]
+
+# Add these settings
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+# Update ALLOWED_HOSTS if needed
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Add these settings at the bottom of the file
+# Social Auth Settings
+SOCIAL_AUTH_FACEBOOK_KEY = '10091952917526567'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'fb48b09a5d16ca133b6d8254a59ae963'
+
+INSTAGRAM_APP_ID = '1239687471059342'
+INSTAGRAM_APP_SECRET = 'c741ad9e4be85144837940b63d8ec5a2'
+
+LINKEDIN_CLIENT_ID = '86e36wve52muat'
+LINKEDIN_CLIENT_SECRET = 'WPL_AP1.Ll0mJ95VG9bZJSf2.WrN+Mw=='
+
+# Redirect URIs
+FACEBOOK_REDIRECT_URI = 'http://localhost:3000/facebook-callback'
+INSTAGRAM_REDIRECT_URI = 'http://localhost:3000/instagram-callback'
+LINKEDIN_REDIRECT_URI = 'http://localhost:3000/linkedin-callback'
+
+# Frontend URL for CORS
+FRONTEND_URL = 'http://localhost:3000'
