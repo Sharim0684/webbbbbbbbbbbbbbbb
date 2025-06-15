@@ -10,23 +10,21 @@ import './App.css';
 
 import DashBoard from './components/DashBoard';
 import AccountsPage from './components/AccountsPage/accounts-page';
-// import AutoPostSettings from './components/AutoPost/aotoPost';
 import SharePostPage from './components/SharePost/sharePost';
 import ThankYouPage from './components/ThankyouPage/thankyouPage';
-// import SetupSchedulePage from './components/Post- Schedules/schedules';
 import ProfilePage from './components/profile/profile';
 import HistoryPage from './components/History/history';
 import NotFoundPage from './components/NotFoundPage';
 import Templates from './components/Templates';
 import SocialMediaConnect from './components/AccountsPage/SocialMediaConnect';
 import FacebookCallback from './components/FacebookCallback';
-
+import SocialMediaPost from './components/SocialMediaPost/SocialMediaPost';
+import SocialPostForm from './components/SocialPostForm';
 
 function App() {
-  
   return (
     <div className="App">
-      <BrowserRouter>      
+      <BrowserRouter>
         <Routes>
           <Route exact path="/login" Component={LoginForm} />
           <Route exact path="/" Component={DashBoard} />
@@ -40,16 +38,11 @@ function App() {
           <Route exact path='/profile' Component={ProfilePage} />
           <Route exact path='/history' Component={HistoryPage} />
           <Route exact path='/facebook-callback' Component={FacebookCallback} />
-          <Route path="/linkedin-callback" element={<LinkedInCallback />} />
-          <Route path='*' Component={NotFoundPage}/>
+          <Route exact path='/linkedin-callback' Component={LinkedInCallback} />
+          <Route exact path='/post' Component={SocialPostForm} />
+          <Route path="*" Component={NotFoundPage}/>
         </Routes>
-       </BrowserRouter>
-          {/* <Route exact path='/schedulePage' Component={SetupSchedulePage} /> */}
-          {/* <Route exact path='/autoPost' Component={AutoPostSettings} /> */}
-          {/* <Templates/> */}
-      {/* Remove this line */}
-      {/* <SocialMediaPost /> */}
-       
+      </BrowserRouter>
     </div>
   );
 }

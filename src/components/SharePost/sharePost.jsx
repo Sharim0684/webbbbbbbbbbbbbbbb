@@ -20,11 +20,14 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import XIcon from '@mui/icons-material/X';
+import axios from 'axios';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+
+const BASE_URL = 'http://127.0.0.1:8000/api';
 
 const CustomQuill = styled("div")({
     "& .ql-editor": {
@@ -36,55 +39,110 @@ const CustomQuill = styled("div")({
 });
 
 const SharePostPage = () => {
-    const [userPlatforms,setUserPlatforms]=useState([]);
+    const [userPlatforms, setUserPlatforms] = useState([]);
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
-    const [postContent, setPostContent] = useState("");
-    const [postTitle, setPostTitle] = useState("");
-    const [enableLikes, setEnableLikes] = useState(false);
-    const [enableComments, setEnableComments] = useState(false);
-    const [scheduleError, setScheduleError] = useState("");
-    const [errors, setErrors] = useState({
-        title: "",
-        content: "",
-        platform: ""
-    });
-    const [error, setError] = useState("");
-    const [uploadedFile, setUploadedFile] = useState(null);
+    const [postTitle, setPostTitle] = useState('');
+    const [postContent, setPostContent] = useState('');
+    const [enableLikes, setEnableLikes] = useState(true);
+    const [enableComments, setEnableComments] = useState(true);
+    const [error, setError] = useState('');
     const [previewOpen, setPreviewOpen] = useState(false);
-    const [scheduleOpen, setScheduleOpen] = useState(false);
-    const [scheduleDate, setScheduleDate] = useState("");
-    const [scheduleTime, setScheduleTime] = useState("");
+    const [mediaFiles, setMediaFiles] = useState([]);
+    const [scheduleDate, setScheduleDate] = useState(null);
+    const [scheduleTime, setScheduleTime] = useState(null);
     const [enableReminder, setEnableReminder] = useState(false);
-    const quillRef = useRef(null);
+    const [reminderTime, setReminderTime] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [scheduleOpen, setScheduleOpen] = useState(false);
+    const [scheduleError, setScheduleError] = useState('');
+
     const navigate = useNavigate();
 
-    useEffect(()=>{
-        const platforms = JSON.parse(Cookies.get('userPlatforms'));
-        setUserPlatforms(platforms);
-    }, []);
+    useEffect(() => {
+        const checkAuthAndFetch = async () => {
+            try {
+                // First check if we have a token
+                const token = Cookies.get('authToken');
+                if (!token) {
+                    // Try auto-login with Facebook first
+                    const facebookResponse = await axios.post(`${BASE_URL}/auth/auto-login/`, {
+                        provider: 'facebook'
+                    });
 
-    const handlePlatformClick = (platform) => {
-        setSelectedPlatforms([platform]);
-        setError("");
-    };
+                    if (facebookResponse.status === 200) {
+                        Cookies.set('authToken', facebookResponse.data.token);
+                    } else {
+                        // Try LinkedIn auto-login
+                        const linkedinResponse = await axios.post(`${BASE_URL}/auth/auto-login/`, {
+                            provider: 'linkedin'
+                        });
 
-    const handleCheckboxClick = (platform) => {
+                        if (linkedinResponse.status === 200) {
+                            Cookies.set('authToken', linkedinResponse.data.token);
+                        } else {
+                            navigate('/login');
+                            return;
+                        }
+                    }
+                }
+
+                // Fetch platforms
+                const response = await axios.get(`${BASE_URL}/platforms/`, {
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.data.platforms) {
+                    const platforms = response.data.platforms.map(platform => ({
+                        key: platform.key,
+                        name: platform.name,
+                        logo: platform.logo || 
+                            platform.key === 'facebook' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/640px-Facebook_Logo_%282019%29.png' :
+                            platform.key === 'linkedin' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/LinkedIn_Logo.svg/640px-LinkedIn_Logo.svg.png' :
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/640px-Instagram_icon.png',
+                        is_selected: platform.is_selected
+                    }));
+                    setUserPlatforms(platforms);
+                    setSelectedPlatforms(platforms
+                        .filter(platform => platform.is_selected)
+                        .map(platform => platform.key));
+                }
+            } catch (err) {
+                console.error('Error during auth check:', err);
+                navigate('/login');
+            }
+        };
+
+        checkAuthAndFetch();
+    }, [navigate]);
+
+    const handleCheckboxClick = (platformKey) => {
         setSelectedPlatforms((prevSelected) => {
-            const newSelected = prevSelected.includes(platform)
-                ? prevSelected.filter((p) => p !== platform)
-                : [...prevSelected, platform];
+            const newSelected = prevSelected.includes(platformKey)
+                ? prevSelected.filter((p) => p !== platformKey)
+                : [...prevSelected, platformKey];
             return newSelected;
         });
         setError("");
+    };
+
+    const handlePlatformClick = (platformKey) => {
+        if (selectedPlatforms.includes(platformKey)) {
+            setSelectedPlatforms(selectedPlatforms.filter(p => p !== platformKey));
+        } else {
+            setSelectedPlatforms([...selectedPlatforms, platformKey]);
+        }
     };
 
     const handleSelectAll = () => {
         if (selectAll) {
             setSelectedPlatforms([]);
         } else {
-            setSelectedPlatforms(userPlatforms.map((p) => p.name));
+            setSelectedPlatforms(userPlatforms.map((p) => p.key));
         }
         setSelectAll(!selectAll);
         setError("");
@@ -108,44 +166,61 @@ const SharePostPage = () => {
         setPostContent(content);
 
         if (selectedPlatforms.length === 0) {
-            setErrors((prev) => ({ ...prev, content: "Please select a platform." }));
+            setError("Please select a platform.");
             return;
         }
 
         const characterLimit = selectedPlatforms.length > 1
             ? 270
-            : userPlatforms.find(p => p.name === selectedPlatforms[0])?.limit || 270;
+            : userPlatforms.find(p => p.key === selectedPlatforms[0])?.limit || 270;
 
         if (content.length > characterLimit) {
-            setErrors((prev) => ({ ...prev, content: `Character limit exceeded! Max allowed: ${characterLimit} characters.` }));
+            setError(`Character limit exceeded! Max allowed: ${characterLimit} characters.`);
         } else {
-            setErrors((prev) => ({ ...prev, content: "" }));
+            setError("");
         }
     };
 
     const handleTitleChange = (event) => {
         setPostTitle(event.target.value);
-        setErrors((prev) => ({ ...prev, title: event.target.value.trim() ? "" : "Enter Post Title" }));
+        setError(event.target.value.trim() ? "" : "Enter Post Title");
     };
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
-        if (!file) return;
+        if (!file) {
+            setError('No file selected');
+            return;
+        }
 
-        setUploadedFile(file);
-        const fileUrl = URL.createObjectURL(file);
+        // Validate file type
+        const fileType = file.type || '';
+        if (!fileType.startsWith('image/')) {
+            setError('Please select an image file');
+            return;
+        }
+
+        // Validate file size
+        if (file.size > 10 * 1024 * 1024) { // 10MB limit
+            setError('Image file size should be less than 10MB');
+            return;
+        }
+
+        // Clear any existing files
+        setMediaFiles([]);
+
+        // Create thumbnail and set new file
+        const preview = URL.createObjectURL(file);
+        setMediaFiles([{
+            file,
+            preview,
+            type: fileType
+        }]);
+
+        // Insert image into editor
         const editor = quillRef.current.getEditor();
         editor.focus();
-
-        const range = editor.getSelection() || { index: editor.getLength(), length: 0 };
-
-        if (file.type.startsWith("image/")) {
-            editor.insertEmbed(range.index, "image", fileUrl);
-        } else if (file.type.startsWith("video/")) {
-            editor.insertEmbed(range.index, "video", fileUrl);
-        } else {
-            editor.insertText(range.index, `[File: ${file.name}](${fileUrl})`);
-        }
+        editor.insertEmbed(editor.getLength(), 'image', preview);
     };
 
     const handlePublish = () => {
@@ -155,7 +230,7 @@ const SharePostPage = () => {
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
 
-        setErrors(newErrors);
+        setError(newErrors.platform);
 
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setPreviewOpen(true);
@@ -168,73 +243,65 @@ const SharePostPage = () => {
 
     const handlePost = async () => {
         try {
-            const linkedinToken = Cookies.get('linkedin_access_token');
-            const facebookToken = Cookies.get('facebook_access_token');
-
-            const isLinkedInSelected = selectedPlatforms.includes('LinkedIn');
-            const isFacebookSelected = selectedPlatforms.includes('Facebook');
-
-            const selectedPlatformNames = [];
-            if (isLinkedInSelected) selectedPlatformNames.push('LinkedIn');
-            if (isFacebookSelected) selectedPlatformNames.push('Facebook');
-
-            if (selectedPlatformNames.length === 0) {
-                alert('Please select at least one platform');
+            const token = Cookies.get('authToken');
+            if (!token) {
+                navigate('/login');
                 return;
             }
 
-            if (isLinkedInSelected && !linkedinToken) {
-                alert('Please connect to LinkedIn first');
-                return;
-            }
-
-            if (isFacebookSelected && !facebookToken) {
-                alert('Please connect to Facebook first');
-                return;
-            }
-
-            const plainTextContent = postContent.replace(/<[^>]+>/g, '');
-
-            const postData = {};
-
-            if (isLinkedInSelected) {
-                postData.linkedin = {
-                    message: `${postTitle}\n\n${plainTextContent}`,
-                    visibility: "PUBLIC"
-                };
-            }
-
-            if (isFacebookSelected) {
-                postData.facebook = {
-                    message: `${postTitle}\n\n${plainTextContent}`,
-                    visibility: "PUBLIC"
-                };
-            }
-
-            console.log('Posting to platforms:', postData);
-
-            const response = await fetch('http://127.0.0.1:8000/social', {
-                method: 'POST',
+            // Get credentials for selected platforms
+            const credentialsResponse = await axios.get(`${BASE_URL}/social/get-credentials/`, {
                 headers: {
+                    'Authorization': `Token ${token}`,
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(postData)
+                }
             });
 
-            const data = await response.json();
+            // Prepare post data
+            const formData = new FormData();
+            formData.append('content', postContent);
+            
+            // Add media file if present
+            if (mediaFiles && mediaFiles.length > 0) {
+                formData.append('media', mediaFiles[0].file, mediaFiles[0].file.name);
+            }
 
-            if (response.ok) {
+            // Add platforms
+            selectedPlatforms.forEach(platform => {
+                formData.append('platforms', platform);
+            });
+
+            // Add credentials for each platform
+            Object.entries(credentialsResponse.data).forEach(([platform, credential]) => {
+                if (selectedPlatforms.includes(platform)) {
+                    formData.append(`credentials_${platform}`, credential.access_token);
+                }
+            });
+
+            // Send post request
+            const response = await axios.post(`${BASE_URL}/social/post/`, formData, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (response.status === 201) {
+                // Handle success
                 setPostTitle('');
                 setPostContent('');
+                setSelectedPlatforms([]);
+                setEnableLikes(true);
+                setEnableComments(true);
                 setPreviewOpen(false);
-                alert(`Successfully posted to ${selectedPlatformNames.join(' and ')}!`);
+                setMediaFiles([]);
                 navigate('/thankYouPage');
             } else {
-                throw new Error(data.message || 'Failed to post to selected platforms');
+                throw new Error(response.data.message || 'Failed to create post');
             }
         } catch (error) {
             console.error('Error posting:', error);
-            alert('Failed to post. Please try again.');
+            setError(error.response?.data?.message || 'Failed to create post. Please try again.');
         }
     };
 
@@ -245,7 +312,7 @@ const SharePostPage = () => {
         if (!postContent.trim()) newErrors.content = "Enter Post Content";
         if (selectedPlatforms.length === 0) newErrors.platform = "Please select at least one platform.";
 
-        setErrors(newErrors);
+        setError(newErrors.platform);
 
         if (!newErrors.title && !newErrors.content && !newErrors.platform) {
             setScheduleOpen(true);
@@ -254,16 +321,16 @@ const SharePostPage = () => {
 
     const handleSchedule = (date, time) => {
         if (!date || !time) {
-            setScheduleError("Please select both date and time.");
+            setError("Please select both date and time.");
             return;
         }
 
-        setScheduleError("");
+        setError("");
         setScheduleDate(date);
         setScheduleTime(time);
 
         const postText = postContent.replaceAll(/<[^>]+>/g, "");
-        const userUploadedFile = uploadedFile ? uploadedFile.name : '';
+        const userUploadedFile = mediaFiles[0] ? mediaFiles[0].name : '';
         const userScheduleDetails = {
             dateOfSchedule: date,
             timeOfSchedule: time,
@@ -299,40 +366,15 @@ const SharePostPage = () => {
         ],
     };
 
-    // ------------------ ✅ NEW CODE ADDED BELOW ------------------
-    const postToLinkedInWithImage = async (message, imagePath) => {
-        try {
-            const response = await fetch('/post_to_linkedin_with_image', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message, image_path: imagePath }),
-            });
-            const result = await response.json();
-            console.log(result);
-        } catch (error) {
-            console.error('Error posting to LinkedIn with image:', error);
-        }
-    };
+    const quillRef = useRef(null);
 
-    const handlePostWithImage = () => {
-        const message = `${postTitle}\n\n${postContent.replace(/<[^>]+>/g, '')}`;
-        const imagePath = uploadedFile ? uploadedFile.name : '';
-        if (imagePath) {
-            postToLinkedInWithImage(message, imagePath);
-        } else {
-            alert("No image uploaded.");
-        }
-    };
-    
     return (
         <Box>
-      {/* Header */}
-      <Box sx={{ width: "100%" }}>
-        <Header />
-      </Box>
- 
+            {/* Header */}
+            <Box sx={{ width: "100%" }}>
+                <Header />
+            </Box>
+
             <Container maxWidth="xl" sx={{ border: "", marginTop: 5 }}>
                 <Box
                     sx={{
@@ -375,39 +417,37 @@ const SharePostPage = () => {
                                     </Button>
                                 </Stack>
                             )}
-                            <FormGroup sx={{ marginTop: 3, gap: 2 }}>
-                                {userPlatforms.map(({ name, logo }) => (
-                                    <Stack key={name} direction="row" alignItems="center" spacing={2}>
-                                        {showCheckboxes && (
-                                            <Checkbox
-                                                checked={selectedPlatforms.includes(name)}
-                                                onChange={() => handleCheckboxClick(name)}
-                                                sx={{
-                                                    color: "#561f5b",
-                                                    "&.Mui-checked": { color: "#561f5b" }
-                                                }}
-                                            />
-                                        )}
-                                        <Button
-                                            onClick={() => handlePlatformClick(name)}
+                            {userPlatforms.map(({ key, name, logo }) => (
+                                <Stack key={key} direction="row" alignItems="center" spacing={2}>
+                                    {showCheckboxes && (
+                                        <Checkbox
+                                            checked={selectedPlatforms.includes(key)}
+                                            onChange={() => handleCheckboxClick(key)}
                                             sx={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "flex-start",
-                                                color: selectedPlatforms.includes(name) ? "#561f5b" : "561f5b",
-                                                "&:hover": { backgroundColor: "#561f5b", color: "white" },
-                                                textTransform: "none",
-                                                width: "100%",
+                                                color: "#561f5b",
+                                                "&.Mui-checked": { color: "#561f5b" }
                                             }}
-                                        >
-                                            <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
-                                                <img src={logo} alt="Logo" style={{height:'30px',width:'30px',borderRadius:'12px'}} />
-                                                <Typography variant="h6">{name}</Typography>
-                                            </Stack>
-                                        </Button>
-                                    </Stack>
-                                ))}
-                            </FormGroup>
+                                        />
+                                    )}
+                                    <Button
+                                        onClick={() => handlePlatformClick(key)}
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "flex-start",
+                                            color: selectedPlatforms.includes(key) ? "#561f5b" : "561f5b",
+                                            "&:hover": { backgroundColor: "#561f5b", color: "white" },
+                                            textTransform: "none",
+                                            width: "100%",
+                                        }}
+                                    >
+                                        <Stack direction="row" justifyContent='flex-start' alignItems="center" spacing={3}>
+                                            <img src={logo} alt="Logo" style={{height:'30px',width:'30px',borderRadius:'12px'}} />
+                                            <Typography variant="h6">{name}</Typography>
+                                        </Stack>
+                                    </Button>
+                                </Stack>
+                            ))}
                         </Stack>
                     </Box>
                     <Box
@@ -426,7 +466,7 @@ const SharePostPage = () => {
                                 variant="outlined"
                                 value={postTitle}
                                 onChange={handleTitleChange}
-                                error={!!errors.title}
+                                error={!!error}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         "&.Mui-focused fieldset": {
@@ -438,9 +478,9 @@ const SharePostPage = () => {
                                     }
                                 }}
                             />
-                            {errors.title && (
+                            {error && (
                                 <Typography color="error" sx={{ mt: 1 }}>
-                                    {errors.title}
+                                    {error}
                                 </Typography>
                             )}
                             <Typography variant="h6" sx={{ color: "#561f5b", textAlign: "left" }}>
@@ -455,27 +495,33 @@ const SharePostPage = () => {
                                     modules={modules}
                                 />
                             </CustomQuill>
-                            {errors.content && (
+                            {error && (
                                 <Typography color="error" sx={{ mt: 1 }}>
-                                    {errors.content}
-                                </Typography>
-                            )}
-                            {errors.platform && (
-                                <Typography color="error" sx={{ mt: 1 }}>
-                                    {errors.platform}
+                                    {error}
                                 </Typography>
                             )}
                             <Button
                                 variant="contained"
+                                color="primary"
                                 component="label"
                                 sx={{
                                     backgroundColor: "#561f5b",
                                     color: "white",
                                     "&:hover": { backgroundColor: "#420f45" },
+                                    textTransform: "none",
+                                    padding: "12px 24px",
+                                    borderRadius: "8px",
+                                    fontSize: "16px",
+                                    fontWeight: "600"
                                 }}
                             >
-                                Upload Media
-                                <input type="file" hidden onChange={handleFileUpload} />
+                                Upload Image
+                                <input
+                                    hidden
+                                    accept="image/*"
+                                    type="file"
+                                    onChange={handleFileUpload}
+                                />
                             </Button>
                         </Stack>
                         <Stack direction="row" spacing={1} justifyContent="center" sx={{ marginTop: 2 }}>
@@ -573,27 +619,27 @@ const SharePostPage = () => {
                         <Box sx={{ mb: 2, fontSize: '18px', fontWeight: "500", fontFamily: 'Poppins', color: '#424242' }}>
                             <div dangerouslySetInnerHTML={{ __html: postContent }} />
                         </Box>
-                        {(uploadedFile || postContent.includes("http")) && <Divider sx={{ my: 2 }} />}
-                        {uploadedFile && (
+                        {(mediaFiles[0] || postContent.includes("http")) && <Divider sx={{ my: 2 }} />}
+                        {mediaFiles[0] && (
                             <Box sx={{ mb: 2 }}>
-                                {uploadedFile.type.startsWith("image/") ? (
+                                {mediaFiles && mediaFiles.length > 0 && mediaFiles[0]?.type?.startsWith("image/") ? (
                                     <img
-                                        src={URL.createObjectURL(uploadedFile)}
+                                        src={mediaFiles[0]?.preview || ''}
                                         alt="Uploaded"
                                         style={{ width: "200px", height: "200px", borderRadius: 4 }}
                                     />
-                                ) : uploadedFile.type.startsWith("video/") ? (
+                                ) : mediaFiles[0].type.startsWith("video/") ? (
                                     <video
                                         controls
                                         style={{ width: "200px", height: "200px", borderRadius: 4 }}
                                     >
-                                        <source src={URL.createObjectURL(uploadedFile)} type={uploadedFile.type} />
+                                        <source src={URL.createObjectURL(mediaFiles[0].file)} type={mediaFiles[0].type} />
                                         Your browser does not support the video tag.
                                     </video>
                                 ) : (
                                     <Typography variant="body1">
-                                        <a href={URL.createObjectURL(uploadedFile)} target="_blank" rel="noopener noreferrer">
-                                            {uploadedFile.name}
+                                        <a href={URL.createObjectURL(mediaFiles[0].file)} target="_blank" rel="noopener noreferrer">
+                                            {mediaFiles[0].file.name}
                                         </a>
                                     </Typography>
                                 )}
@@ -603,12 +649,16 @@ const SharePostPage = () => {
                             <Typography variant="h6">Selected Platforms:</Typography>
                             <Stack direction="row" spacing={1}>
                                 {selectedPlatforms.map((platform) => {
-                                    const platformData = userPlatforms.find((p) => p.name === platform);
+                                    const platformData = userPlatforms.find((p) => p.key === platform);
+                                    const platformLogo = platformData?.logo || 
+                                        platform === 'facebook' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/640px-Facebook_Logo_%282019%29.png' :
+                                        platform === 'linkedin' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/LinkedIn_Logo.svg/640px-LinkedIn_Logo.svg.png' :
+                                        'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/640px-Instagram_icon.png';
+                                    
                                     return (
                                         <Box key={platform} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                            {/* <Box sx={{ color: platformData.color }}>{platformData.icon}</Box> */}
-                                            <img src={platformData.logo} alt="Logo" style={{height:"30px",width:'30px',borderRadius:'12px'}}/>
-                                            <Typography>{platformData.name}</Typography>
+                                            <img src={platformLogo} alt="Logo" style={{height:"30px",width:'30px',borderRadius:'12px'}}/>
+                                            <Typography>{platform === 'facebook' ? 'Facebook' : platform === 'linkedin' ? 'LinkedIn' : 'Instagram'}</Typography>
                                         </Box>
                                     );
                                 })}
@@ -734,4 +784,3 @@ const SharePostPage = () => {
  
 export default SharePostPage;
  
-

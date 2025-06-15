@@ -317,6 +317,32 @@ const AccountsPage = () => {
 
   // Handle platform deletion
   
+  
+const createPost = async (content, image, platforms) => {
+  try {
+    const formData = new FormData();
+    if (image) {
+      formData.append('media', image);
+    }
+    formData.append('content', content);
+    formData.append('platforms', JSON.stringify(platforms));
+
+    const response = await fetch('https://127.0.0.1:8000/api/create-post/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error creating post:', error);
+    throw error;
+  }
+};
+
   const deleteItem = (name) => {
     const filteredList = selectedPlatforms.filter(
       (platform) => name !== platform.name
@@ -466,3 +492,4 @@ const AccountsPage = () => {
 }
 
 export default AccountsPage;
+

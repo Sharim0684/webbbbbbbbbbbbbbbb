@@ -1,24 +1,123 @@
 from rest_framework import serializers
-
 from django.contrib.auth.hashers import make_password
+from django.core.validators import validate_email
 import re
 from .models import User, Person
-from .models import User
 
 
 class SignupSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
-
+    
     class Meta:
         model = User
         fields = [
-            "name",
-            "email",
-            "phone_number",
-            "gender",
-            "password",
-            "confirm_password",
+            'name',
+            'email',
+            'phone_number',
+            'gender',
+            'password',
+            'confirm_password',
         ]
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'confirm_password': {'write_only': True}
+        }
+
+    def validate_email(self, value):
+        """Validate email format and uniqueness"""
+        try:
+            validate_email(value)
+        except serializers.ValidationError:
+            raise serializers.ValidationError('Invalid email format')
+        
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError('Email already exists')
+        return value
+
+    def validate_phone_number(self, value):
+        """Validate phone number format"""
+        if not re.match(r'^\+?\d{10,15}$', value):
+            raise serializers.ValidationError('Invalid phone number format')
+        return value
+
+    def validate(self, data):
+        """Validate password confirmation"""
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError({'confirm_password': 'Passwords do not match'})
+        return data
+
+    def create(self, validated_data):
+        """Create user with hashed password"""
+        validated_data.pop('confirm_password')
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
+
+
+class PersonSerializer(serializers.ModelSerializer):
+    """Serializer for Person model"""
+    
+    class Meta:
+        model = Person
+        fields = '__all__'
+        read_only_fields = ['user']
+
+    def create(self, validated_data):
+        """Create person associated with user"""
+        user = self.context['request'].user
+        validated_data['user'] = user
+        return super().create(validated_data)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Serializer for User model"""
+    person = PersonSerializer(read_only=True)
+    
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'name',
+            'email',
+            'phone_number',
+            'gender',
+            'person'
+        ]
+        read_only_fields = ['id']
+
+
+class LoginSerializer(serializers.Serializer):
+    """Serializer for user login"""
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        """Validate user credentials"""
+        user = User.objects.filter(email=data['email']).first()
+        if not user or not user.check_password(data['password']):
+            raise serializers.ValidationError('Invalid credentials')
+        return data
+
+
+class CredentialsSerializer(serializers.Serializer):
+    """Serializer for social media credentials"""
+    platform = serializers.CharField()
+    access_token = serializers.CharField()
+    refresh_token = serializers.CharField(required=False)
+    token_expires_at = serializers.DateTimeField(required=False)
+
+    def validate_platform(self, value):
+        """Validate platform name"""
+        valid_platforms = ['facebook', 'linkedin', 'instagram']
+        if value.lower() not in valid_platforms:
+            raise serializers.ValidationError('Invalid platform')
+        return value.lower()
+
+    def validate(self, data):
+        """Validate token expiration"""
+        if 'token_expires_at' in data:
+            if data['token_expires_at'] < timezone.now():
+                raise serializers.ValidationError('Token has expired')
+        return data
 
     def validate(self, data):
         if data["password"] != data["confirm_password"]:
@@ -80,3 +179,5 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'name', 'email', 'phone_number', 'gender', 'social_provider')
+
+
