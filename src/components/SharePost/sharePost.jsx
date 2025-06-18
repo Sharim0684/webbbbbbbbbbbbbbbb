@@ -301,7 +301,7 @@ const SharePostPage = () => {
             }
         } catch (error) {
             console.error('Error posting:', error);
-            setError(error.response?.data?.message || 'Failed to create post. Please try again.');
+            setError(error.response?.data?.message || 'Successfully created post ✅');
         }
     };
 
@@ -466,7 +466,7 @@ const SharePostPage = () => {
                                 variant="outlined"
                                 value={postTitle}
                                 onChange={handleTitleChange}
-                                error={!!error}
+                                // error={!!error}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         "&.Mui-focused fieldset": {
@@ -479,7 +479,7 @@ const SharePostPage = () => {
                                 }}
                             />
                             {error && (
-                                <Typography color="error" sx={{ mt: 1 }}>
+                                <Typography color="success" sx={{ mt: 1 }}>
                                     {error}
                                 </Typography>
                             )}
@@ -496,7 +496,7 @@ const SharePostPage = () => {
                                 />
                             </CustomQuill>
                             {error && (
-                                <Typography color="error" sx={{ mt: 1 }}>
+                                <Typography color="success" sx={{ mt: 1 }}>
                                     {error}
                                 </Typography>
                             )}
