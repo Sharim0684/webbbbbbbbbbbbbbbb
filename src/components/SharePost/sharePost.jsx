@@ -113,7 +113,7 @@ const SharePostPage = () => {
                 }
             } catch (err) {
                 console.error('Error during auth check:', err);
-                navigate('/login');
+                
             }
         };
 
