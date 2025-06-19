@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:8000/api';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api';
 
 // Initialize Facebook SDK if not already initialized
 if (typeof window.FB === 'undefined') {
@@ -145,7 +145,7 @@ export const SocialAuthService = {
         }
       }
 
-      const pageId = '632392123280191';
+      const pageId = process.env.REACT_APP_FACEBOOK_PAGE_ID || '632392123280191';
       
       if (media) {
         // For image posts
