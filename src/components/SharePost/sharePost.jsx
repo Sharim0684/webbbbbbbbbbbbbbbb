@@ -14,18 +14,20 @@ import {
     Divider,
     Switch,
 } from "@mui/material";
-import Header from "../Header";
 import { Close } from "@mui/icons-material";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import XIcon from '@mui/icons-material/X';
-import axios from 'axios';
+import XIcon from "@mui/icons-material/X";
+
+import Header from "../Header";
+import axios from "axios";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.snow.css"; // ✅ THIS fixes the build error
+
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const BASE_URL = 'http://127.0.0.1:8000/api';
 
