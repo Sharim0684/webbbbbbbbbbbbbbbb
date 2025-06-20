@@ -13,15 +13,15 @@
 ### Frontend (.env file)
 ```
 REACT_APP_API_URL=https://your-aws-domain/api
-REACT_APP_FACEBOOK_APP_ID=your_facebook_app_id
+REACT_APP_FACEBOOK_APP_ID=
 ```
 
 ### Backend (AWS Secrets Manager)
 ```
-FACEBOOK_APP_ID=your_facebook_app_id
-FACEBOOK_APP_SECRET=your_facebook_app_secret
-FACEBOOK_PAGE_ID=your_facebook_page_id
-FACEBOOK_ACCESS_TOKEN=your_facebook_access_token
+FACEBOOK_PAGE_ID = "61575091473096"
+FACEBOOK_APP_ID = "10091952917526567"
+FACEBOOK_APP_SECRET = "fb48b09a5d16ca133b6d8254a59ae963"
+FACEBOOK_ACCESS_TOKEN="EACPakZBS9OCcBO1QdRcHsXUKLVgfjXZCXfNfLjO9FJYZBtB2ocnZAfB4tOv1DSEzuGsQl2Ed2SGDE7X45ngc9YQpp9O9GZB7OQwebac2P7BEq1VA03KXlBkgMA4oVfl4h6I8i5jCtqgbCZB1TgFkAUNMwa53EE4CNbjQ0M0arGKvLiADvnY1ZAuHby4FkkotCvcsJFZA"
 ```
 
 ## Facebook App Configuration

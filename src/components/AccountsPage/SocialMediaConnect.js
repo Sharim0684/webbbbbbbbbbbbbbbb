@@ -34,7 +34,7 @@ const SocialMediaConnect = () => {
   };
 
   const handleFacebookLogin = () => {
-    window.open('http://40.192.26.134/accounts/facebook/login/', 'Facebook Login', 'width=600,height=600');
+    window.open('http://127.0.0.1:8000/accounts/facebook/login/', 'Facebook Login', 'width=600,height=600');
   };
 
   const handleInstagramLogin = () => {
